@@ -62,7 +62,7 @@ assignments = data.frame(bc = str_sub(data$sample,1,2),
 # changement de l'ordre d'affichage des conditions pour avoir before-prime puis post-prime puis post-boost
 forUMAP$condition_order = factor(assignments$bc, levels=c('BP','PP','PB'))
 
-plotUMAP = ggplot(forUMAP, aes(x = umap1, y = umap2, color = forUMAP$condition_order)) +
+plotUMAP = ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) +
   geom_point(size = 0.2) +
   xlab("umap1") +
   ylab("umap2") +
