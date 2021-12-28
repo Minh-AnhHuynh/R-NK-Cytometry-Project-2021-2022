@@ -76,16 +76,11 @@ plotUMAP = ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) +
 # geom_point(kmeans@centers)
 # km[["centers"]]
 plotUMAP
-ggsave(filename = paste0("./05_figures/UMAP.pdf"),
+ggsave(filename = paste0("UMAP.pdf"),
        path = "./05_figures")
 
 
 
-
-
-
-#########################################
-# librarian::shelf(factoextra, cluster)
 
 #########################################
 #LOAD DATA
