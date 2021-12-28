@@ -142,7 +142,7 @@ heatmap[1]=NULL
 
 pheatmap(
   mat = as.matrix(heatmap),
-  filename = "./05_figures/pheatmap.pdf",
+  filename = paste0(("./05_figures/pheatmap"), k_centers, "clusters.pdf"),
   cluster_cols = TRUE,
   cluster_rows = TRUE,
 )
