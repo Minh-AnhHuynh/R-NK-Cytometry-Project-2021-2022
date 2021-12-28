@@ -1,13 +1,4 @@
-library(SPADEVizR)
-library(data.table)
-library(ggplot2)
-library(stringr)
-library(dplyr)
-library(flowCore)
-
-# sets the working directory to your desktop
-setwd("./")
-
+librarian::shelf(SPADEVizR, data.table, ggplot2, stringr, dplyr, flowCore)
 
 ### DATA LOADING
 
