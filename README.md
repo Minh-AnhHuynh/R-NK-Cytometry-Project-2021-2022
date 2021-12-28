@@ -1,4 +1,4 @@
-# R-NK-Cytometry-Project-2021-2022
+# R NK Cytometry Project 2021-2022
 
 ## Initial setup :
 * Open the "R-NK-Cytometry-Project-2021-2022.rproj" file in RStudio.
