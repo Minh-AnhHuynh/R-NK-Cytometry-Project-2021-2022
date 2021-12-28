@@ -1,6 +1,5 @@
-setwd("./")
 
-library("spade")
+
 librarian::shelf(igraph,spade)
 
 clustering_markers = read.delim('./02_data/NK_panel.txt')
