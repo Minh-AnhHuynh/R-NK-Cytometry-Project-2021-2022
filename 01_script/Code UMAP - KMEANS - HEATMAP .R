@@ -76,7 +76,8 @@ plotUMAP = ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) +
 # geom_point(kmeans@centers)
 # km[["centers"]]
 plotUMAP
-ggsave(filename = paste0("./05_figures/UMAP.pdf", plot = last_plot()))
+ggsave(filename = paste0("./05_figures/UMAP.pdf"),
+       path = "./05_figures")
 
 
 
@@ -97,7 +98,8 @@ ggsave(filename = paste0("./05_figures/UMAP.pdf", plot = last_plot()))
 #make this example reproducible
 set.seed(123)
 #perform k-means clustering with k = 4 clusters
-km <- kmeans(forUMAP [1:31], centers = 10, nstart = 20)
+k_centers = 10
+km <- kmeans(forUMAP [1:31], centers = k_centers, nstart = 20)
 #view results
 km
 
@@ -117,7 +119,10 @@ plotkmeans = ggplot(forUMAP, aes(x = umap1, y = umap2, color = as.factor(cluster
         panel.grid.minor = element_blank()
   )
 plotkmeans
-ggsave(filename = "/O5_figures/kmeans.pdf")
+ggsave(
+  filename = paste0("kmeans_centers", k_centers, ".pdf"),
+  path = "./05_figures"
+)
 
 
 
