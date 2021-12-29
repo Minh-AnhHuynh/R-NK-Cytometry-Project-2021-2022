@@ -34,7 +34,11 @@ markerTSNE <- clustering_markers[-c(1:7,18,24,29,39,43:45),2]
 
 # sample : On prend 5000 parmi le nombre de ligne de la dataframe
 # Only sampling will work, otherwise too much data will take forever
-data <- data[sample(nrow(data), 10000), ]
+#####################
+sample_value = 10000#
+#####################
+
+data <- data[sample(nrow(data), sample_value), ]
 data <- data[!colnames(data) %in% "cells"]
 
 forTSNE = data[, colnames(data) %in% markerTSNE]
@@ -69,4 +73,6 @@ plotVISNE = ggplot(data, aes(x = tsne1, y = tsne2)) +
                           panel.grid.minor = element_blank()
                   )
 
+pdf(paste0("./05_figures/t-SNE_sample",sample_value,".pdf"), height=10,width=17)
 plot(plotVISNE)
+dev.off()
