@@ -4,8 +4,8 @@ librarian::shelf(SPADEVizR, data.table, ggplot2, stringr, dplyr, flowCore)
 
 clustering_markers = read.delim('./02_data/NK_panel.txt')
 excluded_markers = clustering_markers[c(1:7,18,24,29,39,43,44,45),1]
-
-
+excluded_markers2 = c("File Number", "density", "cells-(Ir191)Di", "cells-(Ir193)Di")
+excluded_markers = c(excluded_markers, excluded_markers2)
 # loads the SPADE results contained in the folder "SPADE" on the Desktop
 
 ################
@@ -16,13 +16,13 @@ output_dir = paste0("./03_spade_analysis/spade_k", k_value)
 
 spade_results = importResultsFromSPADE(output_dir,
                                        exclude.markers = excluded_markers)
+# Check if spade_results works :
+# head(spade_results@cluster.phenotypes)
 
 # génération de la heatmap 
-heatmapViewer(spade_results)
-
 
 pdf(paste0("./05_figures/heatmap_spade_k_",k_value,".pdf"), height=10,width=17)
-plot(spade_results)
+heatmapViewer(spade_results)
 dev.off()
 
 
@@ -78,15 +78,20 @@ assignments = data.frame(bc = str_sub(data$sample,1,8),
                          tp = str_sub(data$sample,1,8),
                          #hour = str_sub(data$sample,6,8),
                          ind = str_sub(data$sample,10,14),
-                         sample_names = data$sample)
+                         sample_names = str_sub(data$sample,1,23))
 
 #Tri des samples pour obtenir 42 echantillons
 assignments = assignments %>% group_by(sample_names) %>% slice(1) 
+# Mettre sample_names dans row names
 sample = assignments$sample_names
 assignments[4]=NULL
 row.names(assignments) = sample
 
+# Put assignment data.frame tidied into spade_results
+spade_results <- assignContext(spade_results, assignments = assignments)
+
 # selects macaque samples before prime vaccination
+condition_BP = rownames(assignments)
 condition_BP = assignments$sample_names[startsWith(assignments$sample_names, "BP")]
 
 # selects macaque samples post-prime vaccination
