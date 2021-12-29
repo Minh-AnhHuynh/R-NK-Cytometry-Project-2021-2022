@@ -14,7 +14,7 @@ DS = 0.05 #the downsampling parameter
 K = 100 # the number of cell clusters to identify
 
 output_dir = paste0("./03_spade_analysis/spade_k", K, "/")
-
+set.seed(123)
 SPADE.driver(
   files,
   out_dir = output_dir,
@@ -25,7 +25,7 @@ SPADE.driver(
 
 LAYOUT_TABLE = read.table(paste0(output_dir, "layout.table"))
 
-mst_graph = igraph:::read.graph(paste0(output_dir, "mst.gml", sep = .Platform$file.sep),
+mst_graph = igraph:::read.graph(paste(output_dir, "mst.gml", sep = .Platform$file.sep),
                                 format = "gml")
 
 #plot(mst_GRAPH)
