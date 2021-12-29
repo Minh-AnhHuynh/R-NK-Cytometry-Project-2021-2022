@@ -28,7 +28,7 @@ LAYOUT_TABLE = read.table(paste0(output_dir, "layout.table"))
 mst_graph = igraph:::read.graph(paste(output_dir, "mst.gml", sep = .Platform$file.sep),
                                 format = "gml")
 
-#plot(mst_GRAPH)
+#plot(mst_graph)
 SPADE.plot.trees(
   mst_graph,
   output_dir,
