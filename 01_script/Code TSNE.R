@@ -2,9 +2,6 @@
 librarian::shelf(flowCore, Rtsne, ggplot2,ggrepel, stringr,uwot)
 # browseVignettes("flowCore")
 
-
-setwd("./R_cytometry_project")
-
 # fs <- read.flowSet(path = "./02_data/NK_FCS/")
 files = list.files("./02_data/NK_FCS/", full.names = TRUE)
 FlowSet = read.flowSet(files)
@@ -36,7 +33,7 @@ colnames(data) = c("Time",markernames,"sample")
 markerTSNE <- clustering_markers[-c(1:7,18,24,29,39,43:45),2]
 
 # sample : On prend 5000 parmi le nombre de ligne de la dataframe
-data <- data[sample(nrow(data), 5000), ]
+# data <- data[sample(nrow(data), 5000), ]
 data <- data[!colnames(data) %in% "cells"]
 
 forTSNE = data[, colnames(data) %in% markerTSNE]
