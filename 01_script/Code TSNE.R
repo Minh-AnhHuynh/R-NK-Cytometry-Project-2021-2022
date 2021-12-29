@@ -33,7 +33,8 @@ colnames(data) = c("Time",markernames,"sample")
 markerTSNE <- clustering_markers[-c(1:7,18,24,29,39,43:45),2]
 
 # sample : On prend 5000 parmi le nombre de ligne de la dataframe
-# data <- data[sample(nrow(data), 5000), ]
+# Only sampling will work, otherwise too much data will take forever
+data <- data[sample(nrow(data), 10000), ]
 data <- data[!colnames(data) %in% "cells"]
 
 forTSNE = data[, colnames(data) %in% markerTSNE]
