@@ -101,33 +101,63 @@ row.names(assignments) = sample
 # Put assignment data.frame tidied into spade_results
 spade_results <- assignContext(spade_results, assignments = assignments)
 
-# selects macaque samples before prime vaccination
-condition_BP = assignments$sample_names[startsWith(assignments$sample_names, "BP")]
+
+# selects macaque samples before prime vaccination manually
+condition_BP = c("BPD19H00_BB078_CD3-CD8+", "BPD19H00_BB231_CD3-CD8+", "BPD19H00_BC641_CD3-CD8+", "BPD19H00_BD620_CD3-CD8+")
+condition_PB = c("PBD00H00_BB078_CD3-CD8+", "PBD00H00_BB231_CD3-CD8+", "PBD00H00_BD620_CD3-CD8+", "PBD00H03_BB078_CD3-CD8+", "PBD00H03_BB231_CD3-CD8+", "PBD00H03_BC641_CD3-CD8+", "PBD00H06_BB078_CD3-CD8+", "PBD00H06_BB231_CD3-CD8+", "PBD00H06_BC641_CD3-CD8+", "PBD00H06_BD620_CD3-CD8+", "PBD01H00_BB078_CD3-CD8+", "PBD01H00_BB231_CD3-CD8+", "PBD01H00_BC641_CD3-CD8+", "PBD01H00_BD620_CD3-CD8+", "PBD03H00_BB078_CD3-CD8+", "PBD03H00_BB231_CD3-CD8+", "PBD03H00_BD620_CD3-CD8+")
+condition_PP = c("PPD00H00_BB078_CD3-CD8+", "PPD00H00_BB231_CD3-CD8+", "PPD00H00_BD620_CD3-CD8+", "PPD00H03_BB078_CD3-CD8+", "PPD00H03_BB231_CD3-CD8+", "PPD00H03_BC641_CD3-CD8+", "PPD00H03_BD620_CD3-CD8+", "PPD00H06_BB078_CD3-CD8+", "PPD00H06_BB231_CD3-CD8+", "PPD00H06_BC641_CD3-CD8+", "PPD01H00_BB078_CD3-CD8+", "PPD01H00_BB231_CD3-CD8+", "PPD01H00_BC641_CD3-CD8+", "PPD01H00_BD620_CD3-CD8+", "PPD03H00_BB078_CD3-CD8+", "PPD03H00_BB231_CD3-CD8+", "PPD03H00_BC641_CD3-CD8+", "PPD14H00_BB078_CD3-CD8+", "PPD14H00_BB231_CD3-CD8+", "PPD14H00_BC641_CD3-CD8+", "PPD14H00_BD620_CD3-CD8+")
+
+#condition_BP = spade_results@assignments[grepl("^BP", rownames(spade_results@assignments)),1]
+
+#rownames(spade_results@assignments) = row.names(assignments)
+
+#condition_BP = rownames(spade_results@assignments[spade_results@assignments$bc == "BPD19H00",])
+
+#condition_BP = rownames(spade_results@assignments[spade_results@assignments$tp == "BPD19H00", ])
 
 # selects macaque samples post-prime vaccination
-condition_PP = assignments$sample_names[startsWith(assignments$sample_names, "PP")]
+#condition_PP = assignments$sample_names[startsWith(assignments$sample_names, "PP")]
 
 # selects macaque samples post-boost vaccination
-condition_PB = assignments$sample_names[startsWith(assignments$sample_names, "PB")]
+#condition_PB = assignments$sample_names[startsWith(assignments$sample_names, "PB")]
 
-spade_results = assignContext(spade_results, assignments = assignments)
 
-# identification des clusters diff?rentiellements exprim?s entre deux conditions
+# Differentially expressed clusters
+# Volcano plot : BP vs PP
 resultsDAC <- identifyDAC(spade_results, 
                           condition1 = condition_BP, condition2 = condition_PP, 
                           th.pvalue = 0.05, 
                           th.fc = 2, 
                           method.paired = FALSE)
 
+export(resultsDAC, filename = paste0("./03_spade_analysis/SPADEVizR/resultsDAC_k", k_value,"_BPvsPP.txt"))
+pdf(paste0("./05_figures/VolcanoDAC_k_",k_value,"_BPvsPP.pdf"), height=10,width=17)
+volcanoViewer(resultsDAC)
+dev.off()
+
+#Volcano plot PP v PB
+resultsDAC <- identifyDAC(spade_results, 
+                          condition1 = condition_PP, condition2 = condition_PB, 
+                          th.pvalue = 0.05, 
+                          th.fc = 2, 
+                          method.paired = FALSE)
+export(resultsDAC, filename = paste0("./03_spade_analysis/SPADEVizR/resultsDAC_k", k_value,"_PPvsPB.txt"))
+pdf(paste0("./05_figures/VolcanoDAC_k_",k_value,"_PPvsPB.pdf"), height=10,width=17)
+volcanoViewer(resultsDAC)
+dev.off()
 
 
-# diplays a volcan plot representations of the DAC results
-plot(resultsDAC)
 
-# exports the results in a text file
-export(resultsDAC,"./SPADEVizR-export/resultsDAC.txt")
-######
-
+# Volcano plot BP vs PB
+resultsDAC <- identifyDAC(spade_results, 
+                          condition1 = condition_BP, condition2 = condition_PB, 
+                          th.pvalue = 0.05, 
+                          th.fc = 2, 
+                          method.paired = FALSE)
+export(resultsDAC, filename = paste0("./03_spade_analysis/SPADEVizR/resultsDAC_k", k_value,"BPvsPB"))
+pdf(paste0("./05_figures/VolcanoDAC_k_",k_value,"_BPvsPB.pdf"), height=10,width=17)
+volcanoViewer(resultsDAC)
+dev.off()
 
 
 
