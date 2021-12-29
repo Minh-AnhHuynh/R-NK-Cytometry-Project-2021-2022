@@ -62,8 +62,19 @@ write.table(smallclusterQC$small.clusters, paste0("./04_quality_controls/Uniform
 ### DAC IDENTIFICATION 
 
 # creation d'une dataframe avec ligne = cellule et colonne = marqueur
-#data = data.frame()
+# fs <- read.flowSet(path = "./02_data/NK_FCS/")
+files = list.files("./02_data/NK_FCS/", full.names = TRUE)
+FlowSet = read.flowSet(files)
 
+# sélection des marqueurs d'intérêt
+clustering_markers = read.delim('./02_data/NK_panel.txt')
+markers2norm = clustering_markers[-c(1:7,18,24,29,39,43:45),1]
+
+# transformation arcsinh des marqueurs
+ArcTrans = arcsinhTransform()
+TransList = transformList(from = markers2norm, tfun = ArcTrans)
+FlowSet = TransList %on% FlowSet
+data = data.frame()
 for (i in 1:length(FlowSet)) {
   print(paste0("fichier numero ", i))
   data_sub <- exprs(FlowSet[[i]])
@@ -91,7 +102,6 @@ row.names(assignments) = sample
 spade_results <- assignContext(spade_results, assignments = assignments)
 
 # selects macaque samples before prime vaccination
-condition_BP = rownames(assignments)
 condition_BP = assignments$sample_names[startsWith(assignments$sample_names, "BP")]
 
 # selects macaque samples post-prime vaccination
