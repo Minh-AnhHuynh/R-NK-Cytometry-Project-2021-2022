@@ -278,13 +278,14 @@ print(clusters)
 phenoViewer(spade_results,cluster=selected.clusters[1])
 ######
 
-### GENERATE MASTER REPORT
+# GENERATE MASTER REPORT -------------------------------------------------------
 # generates a report with the main SPADEVizR functionalities
 createReport(spade_results, PDFfile = "./SPADEVizR-masterReport/SPADEVizR-report.pdf", select.plots = c("tree","count", "heatmap", "kinetics_pheno", "distogram"), verbose = TRUE)
 
 # generates a report with the main SPADEVizR functionalities with DAC and CC reports
-createReport(spade_results, PDFfile = "./SPADEVizR-masterReport/SPADEVizR-report-withDACandCC.pdf", select.plots = c("tree","count", "heatmap", "kinetics_pheno", "distogram", resultsDAC, resultsCC), verbose = TRUE)
+createReport(spade_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-withDACandCC.pdf", select.plots = c("tree","count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
 ######								 
+
 
 ### CLUSTER MANIPULATION
 # merges the abundances and the phenotypes of clusters 1 and 2 into a new cluster in a Results object
