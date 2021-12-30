@@ -7,7 +7,6 @@ set.seed(123) # for reproducibility
 
 clustering_markers = read.delim('./02_data/NK_panel.txt')
 clustering_markers = clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 1]
-
 files = list.files("./02_data/NK_FCS/",
                    pattern = "fcs",
                    full.names = TRUE)
@@ -16,7 +15,6 @@ DS = 0.05 #the downsampling parameter
 K = 100 # the number of cell clusters to identify
 
 output_dir = paste0("./03_spade_analysis/spade_k", K, "/")
-set.seed(123)
 SPADE.driver(
   files,
   out_dir = output_dir,
