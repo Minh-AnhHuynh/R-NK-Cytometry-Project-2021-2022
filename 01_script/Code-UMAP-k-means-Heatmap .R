@@ -66,8 +66,8 @@ plotUMAP = ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) +
   geom_point(size = 0.2) +
   xlab("umap1") +
   ylab("umap2") +
-  #facet_wrap(~assignments$bc, ncol = 3) +
-  #facet_grid(.~condition_order) +
+  facet_wrap(~assignments$bc, ncol = 3) +
+  facet_grid(.~condition_order) +
   theme_bw() +
   theme(aspect.ratio = 1,
         panel.grid.major = element_blank(),
