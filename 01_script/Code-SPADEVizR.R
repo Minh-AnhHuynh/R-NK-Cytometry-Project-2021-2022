@@ -5,7 +5,6 @@ librarian::shelf(tchitchek-lab/SPADEVizR, data.table, ggplot2, stringr, dplyr, f
 set.seed(123) # for reproducibility
 seed_number = 123
 
- 
 # 2. Data loading ------------------------------------------------------------
 clustering_markers = read.delim('./02_data/NK_panel.txt')
 # Filtering markers
