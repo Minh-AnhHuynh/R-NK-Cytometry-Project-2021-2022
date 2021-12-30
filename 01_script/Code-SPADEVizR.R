@@ -140,13 +140,13 @@ resultsDAC_BPvsPP <- identifyDAC(
   th.fc = 2,
   method.paired = FALSE
 )
-export(resultsDAC_BPvsPP, filename = paste0("./04_SPADEVizR/QualityControls/resultsDAC_k", k_value,"_BPvsPP.txt"))
+export(resultsDAC_BPvsPP, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value,"_BPvsPP.txt"))
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k",k_value,"_BPvsPP.pdf"), height=10,width=17)
-volcanoViewer(resultsDAC)
+volcanoViewer(resultsDAC_BPvsPP)
 dev.off()
 
 # Volcano plot Condition PP v PB
-resultsDAC <- identifyDAC(
+resultsDAC_PPvsPB <- identifyDAC(
   spade_results,
   condition1 = condition_PP,
   condition2 = condition_PB,
@@ -154,13 +154,13 @@ resultsDAC <- identifyDAC(
   th.fc = 2,
   method.paired = FALSE
 )
-export(resultsDAC, filename = paste0("./04_SPADEVizR/QualityControls/resultsDAC_k", k_value,"_PPvsPB.txt"))
+export(resultsDAC_PPvsPB, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value,"_PPvsPB.txt"))
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k",k_value,"_PPvsPB.pdf"), height=10,width=17)
-volcanoViewer(resultsDAC)
+volcanoViewer(resultsDAC_PPvsPB)
 dev.off()
 
 # Volcano plot Condition BP vs PB
-resultsDAC <- identifyDAC(
+resultsDAC_BPvsPB<- identifyDAC(
   spade_results,
   condition1 = condition_BP,
   condition2 = condition_PB,
@@ -168,9 +168,9 @@ resultsDAC <- identifyDAC(
   th.fc = 2,
   method.paired = FALSE
 )
-export(resultsDAC, filename = paste0("./04_SPADEVizR/QualityControls/resultsDAC_k", k_value,"BPvsPB"))
+export(resultsDAC_BPvsPB, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value,"_BPvsPB.txt"))
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k",k_value,"_BPvsPB.pdf"), height=10,width=17)
-volcanoViewer(resultsDAC)
+volcanoViewer(resultsDAC_BPvsPB)
 dev.off()
 
 
@@ -198,17 +198,6 @@ treeViewer(spade_results, samples = samples, marker = "HLADR")
 dev.off()
 
 
-
-
-
-
-
-
-
-
-
-
-
 ## 4.5 CC IDENTIFICATION ========================================================
 variable <- c("PPD00_BB078" = 50, "PPD00_BB231" = 50, "PPD00_BC641" = 50, "PPD00_BD619" = 50, "PPD00_BD620" = 50, "PBD08_BB078" = 32541, "PBD08_BB231" = 16769, "PBD08_BC641" = 16987, "PBD08_BD619" = 11592, "PBD08_BD620" = 7419, "PBD28_BB078" = 14621, "PBD28_BB231" = 7030, "PBD28_BC641" = 1048, "PBD28_BD619" = 3369, "PBD28_BD620" = 3881)
 resultsCC <- identifyCC(spade_results, variable = variable, th.correlation = 0.8, th.pvalue = 0.05)
@@ -219,29 +208,57 @@ plot(resultsCC)
 # exports the results in a text file
 export(resultsCC,"./SPADEVizR-export/resultsCC.txt")
 
-heatmapViewer(spade_results)
 
+## 4.6 Identify Abundance Clusters =============================================
 
-
+resultsAC <- identifyAC(spade_results,
+           samples = condition_BP,
+           mu = 1,
+           th.pvalue = 0.05)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k",k_value,"_BP.pdf"), height=10,width=17)
+abundantClustersViewer(resultsAC)
+dev.off()
 
 ## 4.6 MDS REPRESENTATIONS ============================================
-# displays a MDS representation at the sample level with all clusters
-MDSViewer(spade_results, space = "samples")
+# MDS representation at the sample level with all clusters
 
-# select the significant clusters and print them
-clusters.matrix   <- resultsDAC@results
+# Transformation of assignments from a tibble into a data.frame to make MDSViewer work
+spade_results@assignments <- as.data.frame(spade_results@assignments)
+
+clusters.matrix   <- resultsDAC_BPvsPP@results
 selected.clusters <- clusters.matrix[clusters.matrix$significant==TRUE,]$cluster
 print(selected.clusters)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k",k_value,"_BPvsPP.pdf"), height=10,width=17)
+MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
+dev.off()
 
-# displays a MDS representation at the sample level with DAC
-MDSViewer(spade_results, space = "samples", clusters=selected.clusters)
-######
+# MDS PP vs PB
+spade_results@assignments <- as.data.frame(spade_results@assignments)
+
+clusters.matrix   <- resultsDAC_PPvsPB@results
+selected.clusters <- clusters.matrix[clusters.matrix$significant==TRUE,]$cluster
+print(selected.clusters)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k",k_value,"_PPvsPB.pdf"), height=10,width=17)
+MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
+dev.off()
+
+# MDS BP vs PB
+clusters.matrix   <- resultsDAC_BPvsPB@results
+selected.clusters <- clusters.matrix[clusters.matrix$significant==TRUE,]$cluster
+print(selected.clusters)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k",k_value,"_BPvsPB.pdf"), height=10,width=17)
+MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
+dev.off()
+
+selected.clusters <- rownames(clusters.matrix)
+print(selected.clusters)
+MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
 
 
-
-
-
-
+# MDS representation at the cluster level
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Clusters_k",k_value,"_BPvsPP.pdf"), height=10,width=17)
+MDSViewer(spade_results)
+dev.off()
 
 ### PHENOVIEWER REPRESENTATIONS
 # select the significant clusters and print them
