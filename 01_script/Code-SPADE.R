@@ -2,9 +2,8 @@
 # Make sure to install librarian before launching the script.
 # install.packages("librarian")
 # Make sure to have opened with an R project file first.
-librarian::shelf(igraph, spade)
+librarian::shelf(spade, igraph, Rcpp, Rclusterpp, RcppEigen)
 set.seed(123) # for reproducibility
-
 
 # 2. Load data and select clustering markers ---------------------------------
 clustering_markers = read.delim('./02_data/NK_panel.txt')
