@@ -45,24 +45,15 @@ print(smallclusterQC$perc)
 
 # Save the small cluster matrix in a text file
 write.table(smallclusterQC$small.clusters, paste0("./04_SPADEVizR/QualityControls/UniformClusters-smallclusters-matrix_k", k_value,".txt"),quote=FALSE,sep="\t",col.names=NA)
-
+# Notes : Cluster 57 and 73 are small clusters
 
 # 4. Analysis and Figures ----------------------------------------------------
 
 ## 4.1 Heatmap generation ====================================================
 
-pdf(paste0("./05_figures/heatmap_spade_k_",k_value,".pdf"), height=10,width=17)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/heatmap_spade_k",k_value,".pdf"), height=10,width=17)
 heatmapViewer(spade_results)
 dev.off()
-
-
-
-
-
-
-
-
-
 
 ## 4.2 Identification of Differentially Abundant Clusters ==========================================================================
 
@@ -118,6 +109,7 @@ condition_BP = c("BPD19H00_BB078_CD3-CD8+", "BPD19H00_BB231_CD3-CD8+", "BPD19H00
 
 # Post Prime
 condition_PP = c("PPD00H00_BB078_CD3-CD8+", "PPD00H00_BB231_CD3-CD8+", "PPD00H00_BD620_CD3-CD8+", "PPD00H03_BB078_CD3-CD8+", "PPD00H03_BB231_CD3-CD8+", "PPD00H03_BC641_CD3-CD8+", "PPD00H03_BD620_CD3-CD8+", "PPD00H06_BB078_CD3-CD8+", "PPD00H06_BB231_CD3-CD8+", "PPD00H06_BC641_CD3-CD8+", "PPD01H00_BB078_CD3-CD8+", "PPD01H00_BB231_CD3-CD8+", "PPD01H00_BC641_CD3-CD8+", "PPD01H00_BD620_CD3-CD8+", "PPD03H00_BB078_CD3-CD8+", "PPD03H00_BB231_CD3-CD8+", "PPD03H00_BC641_CD3-CD8+", "PPD14H00_BB078_CD3-CD8+", "PPD14H00_BB231_CD3-CD8+", "PPD14H00_BC641_CD3-CD8+", "PPD14H00_BD620_CD3-CD8+")
+
 # Post Boost
 condition_PB = c("PBD00H00_BB078_CD3-CD8+", "PBD00H00_BB231_CD3-CD8+", "PBD00H00_BD620_CD3-CD8+", "PBD00H03_BB078_CD3-CD8+", "PBD00H03_BB231_CD3-CD8+", "PBD00H03_BC641_CD3-CD8+", "PBD00H06_BB078_CD3-CD8+", "PBD00H06_BB231_CD3-CD8+", "PBD00H06_BC641_CD3-CD8+", "PBD00H06_BD620_CD3-CD8+", "PBD01H00_BB078_CD3-CD8+", "PBD01H00_BB231_CD3-CD8+", "PBD01H00_BC641_CD3-CD8+", "PBD01H00_BD620_CD3-CD8+", "PBD03H00_BB078_CD3-CD8+", "PBD03H00_BB231_CD3-CD8+", "PBD03H00_BD620_CD3-CD8+")
 
@@ -140,7 +132,7 @@ condition_PB = c("PBD00H00_BB078_CD3-CD8+", "PBD00H00_BB231_CD3-CD8+", "PBD00H00
 
 ## 4.3 Volcano plot  =====================================================
 # Volcano plot Condition BP vs PP 
-resultsDAC <- identifyDAC(
+resultsDAC_BPvsPP <- identifyDAC(
   spade_results,
   condition1 = condition_BP,
   condition2 = condition_PP,
@@ -148,8 +140,8 @@ resultsDAC <- identifyDAC(
   th.fc = 2,
   method.paired = FALSE
 )
-export(resultsDAC, filename = paste0("./04_SPADEVizR/QualityControls/resultsDAC_k", k_value,"_BPvsPP.txt"))
-pdf(paste0("./05_figures/VolcanoDAC_k_",k_value,"_BPvsPP.pdf"), height=10,width=17)
+export(resultsDAC_BPvsPP, filename = paste0("./04_SPADEVizR/QualityControls/resultsDAC_k", k_value,"_BPvsPP.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k",k_value,"_BPvsPP.pdf"), height=10,width=17)
 volcanoViewer(resultsDAC)
 dev.off()
 
@@ -163,7 +155,7 @@ resultsDAC <- identifyDAC(
   method.paired = FALSE
 )
 export(resultsDAC, filename = paste0("./04_SPADEVizR/QualityControls/resultsDAC_k", k_value,"_PPvsPB.txt"))
-pdf(paste0("./05_figures/VolcanoDAC_k_",k_value,"_PPvsPB.pdf"), height=10,width=17)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k",k_value,"_PPvsPB.pdf"), height=10,width=17)
 volcanoViewer(resultsDAC)
 dev.off()
 
@@ -177,10 +169,9 @@ resultsDAC <- identifyDAC(
   method.paired = FALSE
 )
 export(resultsDAC, filename = paste0("./04_SPADEVizR/QualityControls/resultsDAC_k", k_value,"BPvsPB"))
-pdf(paste0("./05_figures/VolcanoDAC_k_",k_value,"_BPvsPB.pdf"), height=10,width=17)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k",k_value,"_BPvsPB.pdf"), height=10,width=17)
 volcanoViewer(resultsDAC)
 dev.off()
-
 
 
 ## 4.4 Tree Viewer ============================================================
@@ -191,14 +182,13 @@ dev.off()
 #dev.off()
 
 # displays in a pdf the aggregated SPADE tree for all samples
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_",k_value,".pdf", width=15, height=15))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value,".pdf"), width=15, height=15)
 treeViewer(spade_results, highlight = resultsDAC)
 dev.off()
 
 # displays in a pdf the aggregated SPADE tree for some samples
-pdf("./05_SPADEVizR-figures/treeViewer-PBsamples.pdf", width=15, height=15)
-samples <- c("PBD28_BB078", "PBD28_BB231", "PBD28_BC641", "PBD28_BD619", "PBD28_BD620")
-treeViewer(spade_results, samples = samples)
+pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-BPvsPP.pdf", width=15, height=15)
+treeViewer(spade_results, samples = condition_BP, highlight = resultsDAC_BPvsPP)
 dev.off()
 
 # displays in a pdf the aggregated SPADE tree for some samples, overlayed by the expression of HLADR 
