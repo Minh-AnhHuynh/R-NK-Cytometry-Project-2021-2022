@@ -260,9 +260,17 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Clusters_k",k_value,"_BPvsPP.pd
 MDSViewer(spade_results)
 dev.off()
 
+## 4.7 Distogram ==============================================================
+# Cluster 21 is the only AC cluster in identifyAC() for BP condition
+sample = condition_BP
+cluster = c("21")
+distogramViewer(spade_results, samples = condition_BP, clusters = cluster)
+
+
+
 ### PHENOVIEWER REPRESENTATIONS
 # select the significant clusters and print them
-clusters.matrix   <- resultsCC@results
+clusters.matrix   <- resultsCC@spade_results
 selected.clusters <- clusters.matrix[clusters.matrix$significant==TRUE,]$cluster
 print(clusters)
 
