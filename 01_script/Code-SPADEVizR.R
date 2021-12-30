@@ -28,24 +28,23 @@ spade_results = importResultsFromSPADE(output_dir,
 # Generate a QC report to detect cell cluster phenotype with uniform marker distribution expressions 
 accuracyQC <- qcUniformClusters(spade_results,
                                 density.PDFfile = paste0("./04_SPADEVizR/QualityControls/UniformClusters_density_k",k_value,"_seed", seed_number,".pdf"),
-                                heatmap.PDFfile = paste0("./04_quality_controls/UniformClusters_heatmap_k",k_value,"_seed",seed_number, ".pdf"),
+                                heatmap.PDFfile = paste0("./04_SPADEVizR/QualityControls/UniformClusters_density_k",k_value,"_seed", seed_number,".pdf"),
                                 uniform.test   = "unimodality")
 
 # Display the percentage of accuracy clusters
 print(accuracyQC$perc)
 
 # Save the accuracy matrix in a text file
-write.table(accuracyQC$accuracy.matrix, paste0("./04_quality_controls/UniformClusters-accuracy-matrix_k_", k_value,".txt"),quote=FALSE,sep="\t",col.names=NA)
+write.table(accuracyQC$accuracy.matrix, paste0("./04_SPADEVizR/QualityControls/UniformClusters-accuracy-matrix_k_", k_value,".txt"),quote=FALSE,sep="\t",col.names=NA)
 
-# Generate a QC report to detect cell cluster phenotypes with low number of cell clusters 								  
-smallclusterQC <- qcSmallClusters(spade_results, PDFfile = paste0("./04_quality_controls/QCreport-SmallClusters_heatmap_k_",k_value,".pdf"), th = 500)
+# Generate a QC report to detect cell cluster phenotypes with low number of cell clusters
+smallclusterQC <- qcSmallClusters(spade_results, PDFfile = paste0("./04_SPADEVizR/QualityControls/QCreport-SmallClusters_heatmap_k",k_value,".pdf"), th = 500)
 
 # Display the percentage of cell cluster phenotypes with low number of cell clusters 
 print(smallclusterQC$perc)
 
 # Save the small cluster matrix in a text file
-write.table(smallclusterQC$small.clusters, paste0("./04_quality_controls/UniformClusters-smallclusters-matrix_k_", k_value,".txt"),quote=FALSE,sep="\t",col.names=NA)
-###
+write.table(smallclusterQC$small.clusters, paste0("./04_SPADEVizR/QualityControls/UniformClusters-smallclusters-matrix_k", k_value,".txt"),quote=FALSE,sep="\t",col.names=NA)
 
 
 # 4. Analysis and Figures ----------------------------------------------------
@@ -184,6 +183,29 @@ dev.off()
 
 
 
+## 4.4 Tree Viewer ============================================================
+
+# displays in a pdf the SPADE tree for sample PBD28_BB078
+#pdf("./05_figures/treeViewer-PBD28_BB078.pdf", width=15, height=15)
+#treeViewer(spade_results,samples="PBD28_BB078")
+#dev.off()
+
+# displays in a pdf the aggregated SPADE tree for all samples
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_",k_value,".pdf", width=15, height=15))
+treeViewer(spade_results, highlight = resultsDAC)
+dev.off()
+
+# displays in a pdf the aggregated SPADE tree for some samples
+pdf("./05_SPADEVizR-figures/treeViewer-PBsamples.pdf", width=15, height=15)
+samples <- c("PBD28_BB078", "PBD28_BB231", "PBD28_BC641", "PBD28_BD619", "PBD28_BD620")
+treeViewer(spade_results, samples = samples)
+dev.off()
+
+# displays in a pdf the aggregated SPADE tree for some samples, overlayed by the expression of HLADR 
+pdf("./05_SPADEVizR-figures/treeViewer-PBsamples-HLADR.pdf", width=15, height=15)
+samples <- c("PBD28_BB078", "PBD28_BB231", "PBD28_BC641", "PBD28_BD619", "PBD28_BD620")
+treeViewer(spade_results, samples = samples, marker = "HLADR")
+dev.off()
 
 
 
@@ -197,7 +219,7 @@ dev.off()
 
 
 
-### CC IDENTIFICATION 
+## 4.5 CC IDENTIFICATION ========================================================
 variable <- c("PPD00_BB078" = 50, "PPD00_BB231" = 50, "PPD00_BC641" = 50, "PPD00_BD619" = 50, "PPD00_BD620" = 50, "PBD08_BB078" = 32541, "PBD08_BB231" = 16769, "PBD08_BC641" = 16987, "PBD08_BD619" = 11592, "PBD08_BD620" = 7419, "PBD28_BB078" = 14621, "PBD28_BB231" = 7030, "PBD28_BC641" = 1048, "PBD28_BD619" = 3369, "PBD28_BD620" = 3881)
 resultsCC <- identifyCC(spade_results, variable = variable, th.correlation = 0.8, th.pvalue = 0.05)
 
@@ -206,14 +228,13 @@ plot(resultsCC)
 
 # exports the results in a text file
 export(resultsCC,"./SPADEVizR-export/resultsCC.txt")
-######
 
 heatmapViewer(spade_results)
 
 
 
 
-### MDS REPRESENTATIONS
+## 4.6 MDS REPRESENTATIONS ============================================
 # displays a MDS representation at the sample level with all clusters
 MDSViewer(spade_results, space = "samples")
 
