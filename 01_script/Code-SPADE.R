@@ -3,7 +3,7 @@
 # install.packages("librarian")
 # Make sure to have opened with an R project file first.
 librarian::shelf(igraph, spade)
-set.seed(123) # for reproducibility
+set.seed(123) # for reproducibility.
 
 clustering_markers = read.delim('./02_data/NK_panel.txt')
 clustering_markers = clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 1]
