@@ -13,7 +13,7 @@ excluded_markers2 = c("File Number", "density", "cells-(Ir191)Di", "cells-(Ir193
 excluded_markers = c(excluded_markers, excluded_markers2)
 
 ## Select k_value
-k_value = 50
+k_value = 100
 
 ## Load SPADE results
 output_dir = paste0("./03_spade_analysis/spade_k", k_value)

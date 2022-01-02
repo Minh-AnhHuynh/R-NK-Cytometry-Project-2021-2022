@@ -14,7 +14,7 @@ files = list.files("./02_data/NK_FCS/",
 
 # Select parameters
 DS = 0.05 #the downsampling parameter
-K = 50 # the number of cell clusters to identify
+K = 100 # the number of cell clusters to identify
 output_dir = paste0("./03_spade_analysis/spade_k", K, "/")
 
 # 3. Launch SPADE.driver -----------------------------------------------------
