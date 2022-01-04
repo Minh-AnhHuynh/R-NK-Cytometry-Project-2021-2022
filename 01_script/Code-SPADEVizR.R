@@ -187,8 +187,19 @@ treeViewer(spade_results, highlight = resultsDAC)
 dev.off()
 
 # displays in a pdf the aggregated SPADE tree for some samples
-pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-BPvsPP.pdf", width=15, height=15)
-treeViewer(spade_results, samples = condition_BP, highlight = resultsDAC_BPvsPP)
+pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-BP.pdf", width=15, height=15)
+treeViewer(spade_results, samples = condition_BP)
+dev.off()
+
+
+# Condition PP vs PB
+pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-PP.pdf", width=15, height=15)
+treeViewer(spade_results, samples = condition_PP)
+dev.off()
+
+# Condition BP vs PB
+pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-PB.pdf", width=15, height=15)
+treeViewer(spade_results, samples = condition_PB)
 dev.off()
 
 # displays in a pdf the aggregated SPADE tree for some samples, overlayed by the expression of HLADR 
@@ -214,7 +225,7 @@ export(resultsCC,"./SPADEVizR-export/resultsCC.txt")
 resultsAC <- identifyAC(spade_results,
            samples = condition_BP,
            mu = 1,
-           th.pvalue = 0.05)
+           th.pvalue = 0.01)
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k",k_value,"_BP.pdf"), height=10,width=17)
 abundantClustersViewer(resultsAC)
 dev.off()
@@ -223,7 +234,7 @@ dev.off()
 resultsAC <- identifyAC(spade_results,
                         samples = condition_PP,
                         mu = 1,
-                        th.pvalue = 0.05)
+                        th.pvalue = 0.01)
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k",k_value,"_PP.pdf"), height=10,width=17)
 abundantClustersViewer(resultsAC)
 dev.off()
@@ -232,7 +243,7 @@ dev.off()
 resultsAC <- identifyAC(spade_results,
                         samples = condition_PB,
                         mu = 1,
-                        th.pvalue = 0.05)
+                        th.pvalue = 0.01)
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k",k_value,"_PB.pdf"), height=10,width=17)
 abundantClustersViewer(resultsAC)
 dev.off()
@@ -275,12 +286,10 @@ MDSViewer(spade_results)
 dev.off()
 
 ## 4.7 Distogram ==============================================================
-# Cluster 21 is the only AC cluster in identifyAC() for BP condition
-cluster = c("11")
-sample = condition_BP
-pdf(paste0("./04SPADEVizR/SPADEVizR-figures/Distogram", cluster, ".pdf"))
-distogramViewer(spade_results, samples = condition_BP, clusters = cluster)
-
+cluster = c("66")
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/Distogram_cluster", cluster, ".pdf"))
+distogramViewer(spade_results, samples = condition_PP, clusters = cluster)
+dev.off()
 
 
 ### PHENOVIEWER REPRESENTATIONS
@@ -298,26 +307,50 @@ phenoViewer(spade_results,cluster=selected.clusters[1])
 # generates a report with the main SPADEVizR functionalities
 createReport(spade_results, PDFfile = "./SPADEVizR-masterReport/SPADEVizR-report.pdf", select.plots = c("tree","count", "heatmap", "kinetics_pheno", "distogram"), verbose = TRUE)
 
-# generates a report with the main SPADEVizR functionalities with DAC and CC reports
-createReport(spade_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-withDACandCC.pdf", select.plots = c("tree","count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
-######								 
 
-
-### CLUSTER MANIPULATION
+# CLUSTER MANIPULATION ------------------------------------------------------
 # merges the abundances and the phenotypes of clusters 1 and 2 into a new cluster in a Results object
-newresults <- mergeClusters(spade_results, clusters=c("1","2"),name="combined")
+newresults <- mergeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"), name = "Metacluster-I")
 print(newresults@cluster.names)
 
-# deletes the clusters 1 and 2 from a Results object
-newresults <- removeClusters(spade_results, clusters=c("1","2"))
+# Delete clusters
+newresults <- removeClusters(newresults, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
 print(newresults@cluster.names)
 ######
+
+# Volcano plot Condition BP vs PP 
+resultsDAC_BPvsPP <- identifyDAC(
+  newresults,
+  condition1 = condition_BP,
+  condition2 = condition_PP,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_BPvsPP, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value,"_BPvsPP_metaclusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k",k_value,"_BPvsPP_metaclusters.pdf"), height=10,width=17)
+volcanoViewer(resultsDAC_BPvsPP)
+dev.off()
+
+## Kinetics visualization for metaclusters ======================================
+spade_results@assignments$Group.1 <- factor(spade_results@assignments$Group.1, levels = c('B', 'D', 'A', 'C', 'E', 'F'))
+
+df3 <- df2[order(df2$Group.1), ]
+
+kineticsViewer(newresults, clusters = c("Metacluster-I"))
+
+
+# Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition
+createReport(newresults, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree","count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
+######	
+######	
+######				
 
 ### CLUSTER ANNOTATIONS
 # defines an annotation dataframe
 annotations <- data.frame()
-annotations["resting_memory","CD21"] <- "c(2,3,4,5)"
-annotations["resting_memory","CD27"] <- "c(2,3,4,5)"
+annotations["Metacluster-I","CD56"] <- "c(9, 24, 62, 36, 28, 35, 59, 77)"
+annotations["resting_memory","IL10"] <- "c(2,3,4,5)"
 annotations["activated_memory","CD21"] <- "1"
 annotations["activated_memory","CD27"] <- "c(2,3,4,5)"
 annotations["naive_B","CD21"] <- "c(2,3,4,5)"
@@ -328,6 +361,6 @@ print(annotations)
 
 # annotates the cell clusters in a Results object#
 # cell clusters are renamed according to the population names
-spade_results <- annotateClusters(spade_results, annotations=annotations)
+spade_results <- annotateClusters(spade_results, annotations = annotations)
 spade_results@cluster.names
 ###

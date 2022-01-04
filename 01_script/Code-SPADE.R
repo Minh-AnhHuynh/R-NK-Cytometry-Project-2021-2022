@@ -7,7 +7,8 @@ set.seed(123) # for reproducibility
 
 # 2. Load data and select clustering markers ---------------------------------
 clustering_markers = read.delim('./02_data/NK_panel.txt')
-clustering_markers = clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 1]
+# Removing file number, cell length, cells, time, and perforine marker
+clustering_markers = clustering_markers[-c(1:7, 18, 24, 29, 37, 39, 43:45), 1]
 files = list.files("./02_data/NK_FCS/",
                    pattern = "*.fcs",
                    full.names = TRUE)

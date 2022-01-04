@@ -1,5 +1,5 @@
-librarian::shelf(flowCore, ggplot2,ggrepel, stringr,uwot)
-
+librarian::shelf(flowCore, ggplot2, ggrepel, stringr, uwot)
+set.seed(123)
 
 # fs <- read.flowSet(path = "./02_data/NK_FCS/")
 files = list.files("./02_data/NK_FCS/", full.names = TRUE)
@@ -38,7 +38,7 @@ data = data[!colnames(data) %in% "cells"]
 
 forUMAP = data[, colnames(data) %in% markerUMAP]
 
-set.seed(123)
+
 ### Création de UMAP
 UMAP = umap(forUMAP,
             min_dist = 0.5,
@@ -46,8 +46,6 @@ UMAP = umap(forUMAP,
             verbose = TRUE,
             n_sgd_threads = 40
 )
-
-
 forUMAP$umap1 = UMAP[, 1]
 forUMAP$umap2 = UMAP[, 2]
 forUMAP$sample = data$sample
