@@ -28,7 +28,7 @@ spade_results = importResultsFromSPADE(output_dir,
 # Generate a QC report to detect cell cluster phenotype with uniform marker distribution expressions 
 accuracyQC <- qcUniformClusters(spade_results,
                                 density.PDFfile = paste0("./04_SPADEVizR/QualityControls/UniformClusters_density_k",k_value,"_seed", seed_number,".pdf"),
-                                heatmap.PDFfile = paste0("./04_SPADEVizR/QualityControls/UniformClusters_density_k",k_value,"_seed", seed_number,".pdf"),
+                                heatmap.PDFfile = paste0("./04_SPADEVizR/QualityControls/UniformClusters_heatmap_k",k_value,"_seed", seed_number,".pdf"),
                                 uniform.test   = "unimodality")
 
 # Display the percentage of accuracy clusters
@@ -210,7 +210,7 @@ export(resultsCC,"./SPADEVizR-export/resultsCC.txt")
 
 
 ## 4.6 Identify Abundance Clusters =============================================
-
+# Condition BP
 resultsAC <- identifyAC(spade_results,
            samples = condition_BP,
            mu = 1,
@@ -219,10 +219,29 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k",k_value,"_BP.p
 abundantClustersViewer(resultsAC)
 dev.off()
 
+# Condition PP
+resultsAC <- identifyAC(spade_results,
+                        samples = condition_PP,
+                        mu = 1,
+                        th.pvalue = 0.05)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k",k_value,"_PP.pdf"), height=10,width=17)
+abundantClustersViewer(resultsAC)
+dev.off()
+
+# Condition PB
+resultsAC <- identifyAC(spade_results,
+                        samples = condition_PB,
+                        mu = 1,
+                        th.pvalue = 0.05)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k",k_value,"_PB.pdf"), height=10,width=17)
+abundantClustersViewer(resultsAC)
+dev.off()
+
 ## 4.6 MDS REPRESENTATIONS ============================================
 # MDS representation at the sample level with all clusters
 
 # Transformation of assignments from a tibble into a data.frame to make MDSViewer work
+# MDS BP vs PP
 spade_results@assignments <- as.data.frame(spade_results@assignments)
 
 clusters.matrix   <- resultsDAC_BPvsPP@results
@@ -250,20 +269,16 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k",k_value,"_BPvsPB.pdf
 MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
 dev.off()
 
-selected.clusters <- rownames(clusters.matrix)
-print(selected.clusters)
-MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
-
-
 # MDS representation at the cluster level
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Clusters_k",k_value,"_BPvsPP.pdf"), height=10,width=17)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Clusters_k", k_value, "_BPvsPP.pdf"), height=10,width=17)
 MDSViewer(spade_results)
 dev.off()
 
 ## 4.7 Distogram ==============================================================
 # Cluster 21 is the only AC cluster in identifyAC() for BP condition
+cluster = c("11")
 sample = condition_BP
-cluster = c("21")
+pdf(paste0("./04SPADEVizR/SPADEVizR-figures/Distogram", cluster, ".pdf"))
 distogramViewer(spade_results, samples = condition_BP, clusters = cluster)
 
 
@@ -277,6 +292,7 @@ print(clusters)
 # displays a parallel coordinates representation for the CC
 phenoViewer(spade_results,cluster=selected.clusters[1])
 ######
+
 
 # GENERATE MASTER REPORT -------------------------------------------------------
 # generates a report with the main SPADEVizR functionalities
