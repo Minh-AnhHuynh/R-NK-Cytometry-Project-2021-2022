@@ -67,6 +67,7 @@ markers2norm <- clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 1]
 ArcTrans <- arcsinhTransform()
 TransList <- transformList(from = markers2norm, tfun = ArcTrans)
 FlowSet <- TransList %on% FlowSet
+
 # Generation of files
 data <- data.frame()
 for (i in 1:length(FlowSet)) {
@@ -87,6 +88,7 @@ assignments <- data.frame(
 )
 
 # Filtering samples to obtain only 42 values corresponding to 42 samples
+# Note : This uses the dplyr packages which converts a dataframe into a tibble to work with.
 assignments <- assignments %>%
   group_by(sample_names) %>%
   slice(1)
@@ -101,10 +103,11 @@ sample <- assignments$sample_names
 assignments[4] <- NULL
 row.names(assignments) <- sample
 
+
 # Put assignment data.frame tidied into spade_results
 spade_results <- assignContext(spade_results, assignments = assignments)
 
-# Transformation of assignments from a tibble into a data.frame to make MDSViewer work
+# Transformation of the dataframe assignments from a tibble into a data.frame to make MDSViewer work
 spade_results@assignments <- as.data.frame(spade_results@assignments)
 
 
@@ -113,25 +116,111 @@ spade_results@assignments <- as.data.frame(spade_results@assignments)
 # Before Prime
 condition_BP <- c("BPD19H00_BB078_CD3-CD8+", "BPD19H00_BB231_CD3-CD8+", "BPD19H00_BC641_CD3-CD8+", "BPD19H00_BD620_CD3-CD8+")
 
+test <- assignments %>% select(starts_with("BP"))
+test <- assignments %>% tidyr::pivot_longer(sample_names, names_to = NULL, values_to = "sample_names", )
+
+
+condition_BP = filter(assignments, grepl("BP", assignments$sample_names))
+Mydata1 = filter(mydata, grepl(0,hp))
+
+condition_BP = row.names(assignments)[,grepl("BP", assignments$sample_names) == TRUE))
+
+
+test <- filter(assignments, grepl("BP", row.names(assignments)))
+test <- na.omit (test)
+grepl("BP", row.names(assignments))
+
+
+condition_BP = sample[sample %in% grepl("BP", rownames(assignments))]
+
+
 # Post Prime
 condition_PP <- c("PPD00H00_BB078_CD3-CD8+", "PPD00H00_BB231_CD3-CD8+", "PPD00H00_BD620_CD3-CD8+", "PPD00H03_BB078_CD3-CD8+", "PPD00H03_BB231_CD3-CD8+", "PPD00H03_BC641_CD3-CD8+", "PPD00H03_BD620_CD3-CD8+", "PPD00H06_BB078_CD3-CD8+", "PPD00H06_BB231_CD3-CD8+", "PPD00H06_BC641_CD3-CD8+", "PPD01H00_BB078_CD3-CD8+", "PPD01H00_BB231_CD3-CD8+", "PPD01H00_BC641_CD3-CD8+", "PPD01H00_BD620_CD3-CD8+", "PPD03H00_BB078_CD3-CD8+", "PPD03H00_BB231_CD3-CD8+", "PPD03H00_BC641_CD3-CD8+", "PPD14H00_BB078_CD3-CD8+", "PPD14H00_BB231_CD3-CD8+", "PPD14H00_BC641_CD3-CD8+", "PPD14H00_BD620_CD3-CD8+")
 
 # Post Boost
 condition_PB <- c("PBD00H00_BB078_CD3-CD8+", "PBD00H00_BB231_CD3-CD8+", "PBD00H00_BD620_CD3-CD8+", "PBD00H03_BB078_CD3-CD8+", "PBD00H03_BB231_CD3-CD8+", "PBD00H03_BC641_CD3-CD8+", "PBD00H06_BB078_CD3-CD8+", "PBD00H06_BB231_CD3-CD8+", "PBD00H06_BC641_CD3-CD8+", "PBD00H06_BD620_CD3-CD8+", "PBD01H00_BB078_CD3-CD8+", "PBD01H00_BB231_CD3-CD8+", "PBD01H00_BC641_CD3-CD8+", "PBD01H00_BD620_CD3-CD8+", "PBD03H00_BB078_CD3-CD8+", "PBD03H00_BB231_CD3-CD8+", "PBD03H00_BD620_CD3-CD8+")
 
-# condition_BP = spade_results@assignments[grepl("^BP", rownames(spade_results@assignments)),1]
 
-# rownames(spade_results@assignments) = row.names(assignments)
+## 4.2.4 Cluster Manipulation  ============================================
+# Merge the abundances and the phenotypes of clusters 1 and 2 into a new cluster in a Results object
+cluster_results <- mergeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"), name = "M.I")
+cluster_results <- mergeClusters(cluster_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"), name = "M.II")
+cluster_results <- mergeClusters(cluster_results, clusters = c("20", "74", "83", "33", "72", "22", "53"), name = "M.III")
+cluster_results <- mergeClusters(cluster_results, clusters = c("26", "94", "2", "91","38", "43", "58", "75", "89", "55", "87", "76", "65", "81"), name = "M.IV")
+cluster_results <- mergeClusters(cluster_results, clusters = c("27", "6", "82", "63", "79", "52", "54"), name = "M.V")
+cluster_results <- mergeClusters(cluster_results, clusters = c("42", "90", "88", "78", "34", "71", "70", "80", "8", "10", "1", "18"), name = "M.VI")
+cluster_results <- mergeClusters(cluster_results, clusters = c("97", "44", "100", "41", "50", "95"), name = "M.VII")
+cluster_results <- mergeClusters(cluster_results, clusters = c("60", "25", "61", "17", "23"), name = "M.VIII")
+cluster_results <- mergeClusters(cluster_results, clusters = c("51", "30", "40", "98"), name = "M.IX")
+cluster_results <- mergeClusters(cluster_results, clusters = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56"), name = "M.X")
+cluster_results <- mergeClusters(cluster_results, clusters = c("73", "93", "86", "45", "67"), name = "M.XI")
+cluster_results <- mergeClusters(cluster_results, clusters = c("5", "15"), name = "M.XII")
+print(cluster_results@cluster.names)
 
-# condition_BP = rownames(spade_results@assignments[spade_results@assignments$bc == "BPD19H00",])
+# Delete clusters
+cluster_results <- removeClusters(cluster_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
+cluster_results <- removeClusters(cluster_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"))
+cluster_results <- removeClusters(cluster_results, clusters = c("20", "74", "83", "33", "72", "22", "53"))
+cluster_results <- removeClusters(cluster_results, clusters = c("26", "94", "2", "91","38", "43", "58", "75", "89", "55", "87", "76", "65", "81"))
+cluster_results <- removeClusters(cluster_results, clusters = c("27", "6", "82", "63", "79", "52", "54"))
+cluster_results <- removeClusters(cluster_results, clusters = c("42", "90", "88", "78", "34", "71", "70", "80", "8", "10", "1", "18"))
+cluster_results <- removeClusters(cluster_results, clusters = c("97", "44", "100", "41", "50", "95"))
+cluster_results <- removeClusters(cluster_results, clusters = c("60", "25", "61", "17", "23"))
+cluster_results <- removeClusters(cluster_results, clusters = c("51", "30", "40", "98"))
+cluster_results <- removeClusters(cluster_results, clusters = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56"))
+cluster_results <- removeClusters(cluster_results, clusters = c("73", "93", "86", "45", "67"))
+cluster_results <- removeClusters(cluster_results, clusters = c("5", "15"))
+print(cluster_results@cluster.names)
 
-# condition_BP = rownames(spade_results@assignments[spade_results@assignments$tp == "BPD19H00", ])
 
-# selects macaque samples post-prime vaccination
-# condition_PP = assignments$sample_names[startsWith(assignments$sample_names, "PP")]
+# Volcano plot Condition BP vs PP
+resultsDAC_BPvsPP <- identifyDAC(
+  cluster_results,
+  condition1 = condition_BP,
+  condition2 = condition_PP,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_BPvsPP, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_BPvsPP_metaclusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPP_metaclusters.pdf"), height = 10, width = 17)
+volcanoViewer(resultsDAC_BPvsPP)
+dev.off()
 
-# selects macaque samples post-boost vaccination
-# condition_PB = assignments$sample_names[startsWith(assignments$sample_names, "PB")]
+## Kinetics visualization for metaclusters ======================================
+kineticsViewer(cluster_results, clusters = c("M.I"))
+
+
+
+######
+######
+######
+
+### CLUSTER ANNOTATIONS
+# defines an annotation dataframe
+annotations <- data.frame()
+annotations["M.I", "CD3"] <- "c(9, 24, 62, 36, 28, 35, 59, 77)"
+annotations["M.II", "CD3"] <- "c(3, 31, 11, 68, 84, 69, 49, 96)"
+annotations["M.III", "unk"] <- "c(20, 74, 83, 33, 72, 22, 53)"
+annotations["M.IV", "unk"] <- "c(26, 94, 2, 91,38, 43, 58, 75, 89, 55, 87, 76, 65, 81)"
+annotations["M.V", "unk"] <- "c(27, 6, 82, 63, 79, 52, 54)"
+annotations["M.VI", "unk"] <- "c(42, 90, 88, 78, 34, 71, 70, 80, 8, 10, 1, 18)"
+annotations["M.VII", "CD14"] <- "c(97, 44, 100, 41, 50, 95)"
+annotations["M.VIII", "CD11c"] <- "c(60, 25, 61, 17, 23"
+annotations["M.IX", "CD66"] <- "c(51, 30, 40, 98)"
+annotations["M.X", "CD66"] <- "c(92, 47, 64, 57, 48, 66, 32, 85, 13, 99, 21, 37, 39, 46, 7, 19, 12, 29, 14, 16, 4, 56)"
+annotations["M.XI", "CD66"] <- "c(73, 93, 86, 45, 67)"
+annotations["M.XII", "unk"] <- "c(5, 15)"
+print(annotations)
+
+# annotates the cell clusters in a Results object#
+# cell clusters are renamed according to the population names
+cluster_results <- annotateClusters(spade_results, annotations = annotations)
+print(cluster_results@cluster.names)
+
+
+
+
 
 # 5. Analysis and Figures ----------------------------------------------------
 
@@ -332,68 +421,7 @@ phenoViewer(spade_results, cluster = selected.clusters[1])
 
 # GENERATE MASTER REPORT -------------------------------------------------------
 # generates a report with the main SPADEVizR functionalities
-createReport(spade_results, PDFfile = "./SPADEVizR-masterReport/SPADEVizR-report.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram"), verbose = TRUE)
-
-
-# Cluster Manipulation  --------------------------------------------------------
-# merges the abundances and the phenotypes of clusters 1 and 2 into a new cluster in a Results object
-newresults <- mergeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"), name = "Metacluster-I")
-print(newresults@cluster.names)
-
-# Delete clusters
-newresults <- removeClusters(newresults, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
-print(newresults@cluster.names)
-######
-
-# Volcano plot Condition BP vs PP
-resultsDAC_BPvsPP <- identifyDAC(
-  newresults,
-  condition1 = condition_BP,
-  condition2 = condition_PP,
-  th.pvalue = 0.05,
-  th.fc = 2,
-  method.paired = FALSE
-)
-export(resultsDAC_BPvsPP, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_BPvsPP_metaclusters.txt"))
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPP_metaclusters.pdf"), height = 10, width = 17)
-volcanoViewer(resultsDAC_BPvsPP)
-dev.off()
-
-## Kinetics visualization for metaclusters ======================================
-
-
-
-
-
-
-
-
-
-
-kineticsViewer(newresults, clusters = c("Metacluster-I"))
-
+createReport(spade_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram"), verbose = TRUE)
 
 # Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition
-createReport(newresults, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
-######
-######
-######
-
-### CLUSTER ANNOTATIONS
-# defines an annotation dataframe
-annotations <- data.frame()
-annotations["Metacluster-I", "CD56"] <- "c(9, 24, 62, 36, 28, 35, 59, 77)"
-annotations["resting_memory", "IL10"] <- "c(2,3,4,5)"
-annotations["activated_memory", "CD21"] <- "1"
-annotations["activated_memory", "CD27"] <- "c(2,3,4,5)"
-annotations["naive_B", "CD21"] <- "c(2,3,4,5)"
-annotations["naive_B", "CD27"] <- "1"
-annotations["tissuelike_memory", "CD21"] <- "1"
-annotations["tissuelike_memory", "CD27"] <- "1"
-print(annotations)
-
-# annotates the cell clusters in a Results object#
-# cell clusters are renamed according to the population names
-spade_results <- annotateClusters(spade_results, annotations = annotations)
-spade_results@cluster.names
-###
+createReport(cluster_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
