@@ -249,7 +249,7 @@ heatmapViewer(spade_results)
 dev.off()
 
 # Focused heatmap on metaclusters
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/heatmap_spade_k", k_value, "_metaclusters.pdf"), height = 10, width = 10)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/heatmap_spade_k", k_value, "_NK-clusters.pdf"), height = 10, width = 17)
 heatmapViewer(NK_results)
 dev.off()
 
@@ -309,7 +309,7 @@ resultsDAC_BPvsPP_NK <- identifyDAC(
   method.paired = FALSE
 )
 export(resultsDAC_BPvsPP_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_BPvsPP_NK-clusters.txt"))
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPP_NK-clusters.pdf"), height = 10, width = 17)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPP_NK-clusters.pdf"), height = 10, width = 10)
 volcanoViewer(resultsDAC_BPvsPP_NK)
 dev.off()
 
@@ -323,10 +323,23 @@ resultsDAC_PPvsPB_NK <- identifyDAC(
   method.paired = FALSE
 )
 export(resultsDAC_PPvsPB_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_PPvsPB_NK-clusters.txt"))
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_PPvsPB_NK-clusters.pdf"), height = 10, width = 17)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_PPvsPB_NK-clusters.pdf"), height = 10, width = 10)
 volcanoViewer(resultsDAC_PPvsPB_NK)
 dev.off()
 
+# Volcano plot for NK clusters only, condition BP vs PB
+resultsDAC_BPvsPB_NK <- identifyDAC(
+  NK_results,
+  condition1 = condition_BP,
+  condition2 = condition_PB,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_BPvsPB_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_PPvsPB_NK-clusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPB_NK-clusters.pdf"), height = 10, width = 10)
+volcanoViewer(resultsDAC_BPvsPB_NK)
+dev.off()
 
 ## 4.4 Tree Viewer ============================================================
 
@@ -420,38 +433,36 @@ dev.off()
 
 
 
-## 4.6 MDS REPRESENTATIONS ============================================
+## 4.6 MDS Representations =================================================
 # MDS representation at the sample level with all clusters
-# MDS BP vs PP
 
-clusters.matrix <- resultsDAC_BPvsPP@results
+# MDS BP vs PP
+clusters.matrix <- resultsDAC_BPvsPP_NK@results
 selected.clusters <- clusters.matrix[clusters.matrix$significant == TRUE, ]$cluster
 print(selected.clusters)
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k", k_value, "_BPvsPP.pdf"), height = 10, width = 17)
-MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k", k_value, "_BPvsPP_NK-clusters.pdf"), height = 10, width = 17)
+MDSViewer(NK_results, space = "samples", clusters = selected.clusters, samples = c(condition_BP, condition_PP))
 dev.off()
 
 # MDS PP vs PB
-spade_results@assignments <- as.data.frame(spade_results@assignments)
-
-clusters.matrix <- resultsDAC_PPvsPB@results
+clusters.matrix <- resultsDAC_PPvsPB_NK@results
 selected.clusters <- clusters.matrix[clusters.matrix$significant == TRUE, ]$cluster
 print(selected.clusters)
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k", k_value, "_PPvsPB.pdf"), height = 10, width = 17)
-MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k", k_value, "_PPvsPB_NK-clusters.pdf"), height = 10, width = 17)
+MDSViewer(NK_results, space = "samples", clusters = selected.clusters, samples = c(condition_PP, condition_PB))
 dev.off()
 
 # MDS BP vs PB
-clusters.matrix <- resultsDAC_BPvsPB@results
+clusters.matrix <- resultsDAC_BPvsPB_NK@results
 selected.clusters <- clusters.matrix[clusters.matrix$significant == TRUE, ]$cluster
 print(selected.clusters)
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k", k_value, "_BPvsPB.pdf"), height = 10, width = 17)
-MDSViewer(spade_results, space = "samples", clusters = selected.clusters)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Samples_k", k_value, "_BPvsPB_NK-clusters.pdf"), height = 10, width = 17)
+MDSViewer(NK_results, space = "samples", clusters = selected.clusters, samples = c(condition_BP, condition_PB))
 dev.off()
 
 # MDS representation at the cluster level
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Clusters_k", k_value, "_BPvsPP.pdf"), height = 10, width = 17)
-MDSViewer(spade_results)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Clusters_k", k_value, "NK-clusters.pdf"), height = 10, width = 17)
+MDSViewer(NK_results)
 dev.off()
 
 
@@ -489,6 +500,26 @@ dev.off()
 
 
 
+## 4.9 PhenoViewer -------------------------------------------------------------
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_III.pdf"), height = 8, width = 10)
+phenoViewer(spade_results, clusters = M.III)
+dev.off()
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_IV.pdf"), height = 8, width = 10)
+phenoViewer(spade_results, clusters = M.IV)
+dev.off()
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_V.pdf"), height = 8, width = 10)
+phenoViewer(spade_results, clusters = M.V)
+dev.off()
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_VI.pdf"), height = 8, width = 10)
+phenoViewer(spade_results, clusters = M.VI)
+dev.off()
+
+
+
 
 # BROUILLON --------------------
 
@@ -508,5 +539,8 @@ phenoViewer(spade_results, cluster = selected.clusters[1])
 # generates a report with the main SPADEVizR functionalities
 createReport(spade_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram"), verbose = TRUE)
 
-# Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition
-createReport(NK_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_NK_metaclusters.pdf", select.plots = c("count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
+# Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition for NK clusters
+createReport(NK_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_NK_clusters.pdf", select.plots = c("count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP_NK), verbose = TRUE)
+
+# Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition for metaclusters
+createReport(cluster_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("count", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
