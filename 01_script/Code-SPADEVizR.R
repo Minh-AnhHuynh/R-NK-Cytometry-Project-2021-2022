@@ -359,7 +359,7 @@ dev.off()
 
 # displays in a pdf the aggregated SPADE tree for some samples
 pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-BP.pdf", width = 15, height = 15)
-treeViewer(spade_results, samples = condition_BP)
+treeViewer(NK_results, highlight = resultsDAC_BPvsPP_NK)
 dev.off()
 
 
