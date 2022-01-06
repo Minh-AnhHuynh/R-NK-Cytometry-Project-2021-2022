@@ -2,6 +2,7 @@
 # Make sure to install librarian before launching the script.
 # install.packages("librarian")
 # Make sure to have opened with an R project file first.
+
 librarian::shelf(spade, igraph, Rcpp, Rclusterpp, RcppEigen)
 set.seed(123) # for reproducibility
 
