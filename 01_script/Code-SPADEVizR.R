@@ -5,6 +5,10 @@ librarian::shelf(tchitchek - lab / SPADEVizR, data.table, ggplot2, stringr, dply
 set.seed(123) # for reproducibility
 seed_number <- 123
 
+
+
+
+
 # 2. Data loading ------------------------------------------------------------
 clustering_markers <- read.delim("./02_data/NK_panel.txt")
 # Filtering markers
@@ -22,6 +26,9 @@ spade_results <- importResultsFromSPADE(output_dir,
 )
 # To check if spade_results is correct :
 # head(spade_results@cluster.phenotypes)
+
+
+
 
 
 # 3. Quality Control ---------------------------------------------------------
@@ -47,6 +54,9 @@ print(smallclusterQC$perc)
 
 # Save the small cluster matrix in a text file
 write.table(smallclusterQC$small.clusters, paste0("./04_SPADEVizR/QualityControls/UniformClusters-smallclusters-matrix_k", k_value, ".txt"), quote = FALSE, sep = "\t", col.names = NA)
+
+
+
 
 
 # 4. Annotation of metadata information -----------------------------------
@@ -78,6 +88,9 @@ for (i in 1:length(FlowSet)) {
   data <- rbind(data, data_sub)
 }
 
+
+
+
 ## 4.2.2 Assigning sample biological conditions (metadata information) ####
 assignments <- data.frame(
   bc = str_sub(data$sample, 1, 8),
@@ -103,12 +116,13 @@ sample <- assignments$sample_names
 assignments[4] <- NULL
 row.names(assignments) <- sample
 
-
 # Put assignment data.frame tidied into spade_results
 spade_results <- assignContext(spade_results, assignments = assignments)
 
 # Transformation of the dataframe assignments from a tibble into a data.frame to make MDSViewer work
 spade_results@assignments <- as.data.frame(spade_results@assignments)
+
+
 
 
 ## 4.2.3 Select samples according to their conditions respectively ========
@@ -141,20 +155,34 @@ condition_PP <- c("PPD00H00_BB078_CD3-CD8+", "PPD00H00_BB231_CD3-CD8+", "PPD00H0
 condition_PB <- c("PBD00H00_BB078_CD3-CD8+", "PBD00H00_BB231_CD3-CD8+", "PBD00H00_BD620_CD3-CD8+", "PBD00H03_BB078_CD3-CD8+", "PBD00H03_BB231_CD3-CD8+", "PBD00H03_BC641_CD3-CD8+", "PBD00H06_BB078_CD3-CD8+", "PBD00H06_BB231_CD3-CD8+", "PBD00H06_BC641_CD3-CD8+", "PBD00H06_BD620_CD3-CD8+", "PBD01H00_BB078_CD3-CD8+", "PBD01H00_BB231_CD3-CD8+", "PBD01H00_BC641_CD3-CD8+", "PBD01H00_BD620_CD3-CD8+", "PBD03H00_BB078_CD3-CD8+", "PBD03H00_BB231_CD3-CD8+", "PBD03H00_BD620_CD3-CD8+")
 
 
+
+
 ## 4.2.4 Cluster Manipulation  ============================================
-# Merge the abundances and the phenotypes of clusters 1 and 2 into a new cluster in a Results object
-cluster_results <- mergeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"), name = "M.I")
-cluster_results <- mergeClusters(cluster_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"), name = "M.II")
-cluster_results <- mergeClusters(cluster_results, clusters = c("20", "74", "83", "33", "72", "22", "53"), name = "M.III")
-cluster_results <- mergeClusters(cluster_results, clusters = c("26", "94", "2", "91","38", "43", "58", "75", "89", "55", "87", "76", "65", "81"), name = "M.IV")
-cluster_results <- mergeClusters(cluster_results, clusters = c("27", "6", "82", "63", "79", "52", "54"), name = "M.V")
-cluster_results <- mergeClusters(cluster_results, clusters = c("42", "90", "88", "78", "34", "71", "70", "80", "8", "10", "1", "18"), name = "M.VI")
-cluster_results <- mergeClusters(cluster_results, clusters = c("97", "44", "100", "41", "50", "95"), name = "M.VII")
-cluster_results <- mergeClusters(cluster_results, clusters = c("60", "25", "61", "17", "23"), name = "M.VIII")
-cluster_results <- mergeClusters(cluster_results, clusters = c("51", "30", "40", "98"), name = "M.IX")
-cluster_results <- mergeClusters(cluster_results, clusters = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56"), name = "M.X")
-cluster_results <- mergeClusters(cluster_results, clusters = c("73", "93", "86", "45", "67"), name = "M.XI")
-cluster_results <- mergeClusters(cluster_results, clusters = c("5", "15"), name = "M.XII")
+# Merge the abundances and the phenotypes of clusters into a new cluster in a Results object
+M.I = c("9", "24", "62", "36", "28", "35", "59", "77")
+M.II = c("3", "31", "11", "68", "84", "69", "49", "96")
+M.III = c("20", "74", "83", "33", "72", "22", "53")
+M.IV = c("26", "94", "2", "91","38", "43", "58", "75", "89", "55", "87", "76", "65", "81")
+M.V = c("27", "6", "82", "63", "79", "52", "54")
+M.VI = c("42", "90", "88", "78", "34", "71", "70", "80", "8", "10", "1", "18")
+M.VII = c("97", "44", "100", "41", "50", "95")
+M.VIII = c("60", "25", "61", "17", "23")
+M.IX = c("51", "30", "40", "98")
+M.X = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56")
+M.XI = c("73", "93", "86", "45", "67")
+M.XII = c("5", "15")
+cluster_results <- mergeClusters(spade_results, clusters = M.I, name = "M.I")
+cluster_results <- mergeClusters(cluster_results, clusters = M.II, name = "M.II")
+cluster_results <- mergeClusters(cluster_results, clusters = M.III, name = "M.III")
+cluster_results <- mergeClusters(cluster_results, clusters = M.IV, name = "M.IV")
+cluster_results <- mergeClusters(cluster_results, clusters = M.V, name = "M.V")
+cluster_results <- mergeClusters(cluster_results, clusters = M.VI, name = "M.VI")
+cluster_results <- mergeClusters(cluster_results, clusters = M.VII, name = "M.VII")
+cluster_results <- mergeClusters(cluster_results, clusters = M.VIII, name = "M.VIII")
+cluster_results <- mergeClusters(cluster_results, clusters = M.IX, name = "M.IX")
+cluster_results <- mergeClusters(cluster_results, clusters = M.X, name = "M.X")
+cluster_results <- mergeClusters(cluster_results, clusters = M.XI, name = "M.XI")
+cluster_results <- mergeClusters(cluster_results, clusters = M.XII, name = "M.XII")
 print(cluster_results@cluster.names)
 
 # Delete clusters
@@ -173,44 +201,35 @@ cluster_results <- removeClusters(cluster_results, clusters = c("5", "15"))
 print(cluster_results@cluster.names)
 
 
-# Volcano plot Condition BP vs PP
-resultsDAC_BPvsPP <- identifyDAC(
-  cluster_results,
-  condition1 = condition_BP,
-  condition2 = condition_PP,
-  th.pvalue = 0.05,
-  th.fc = 2,
-  method.paired = FALSE
-)
-export(resultsDAC_BPvsPP, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_BPvsPP_metaclusters.txt"))
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPP_metaclusters.pdf"), height = 10, width = 17)
-volcanoViewer(resultsDAC_BPvsPP)
-dev.off()
+# Keep only NK clusters
 
-## Kinetics visualization for metaclusters ======================================
-kineticsViewer(cluster_results, clusters = c("M.I"))
+NK_results = removeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
+NK_results <- removeClusters(NK_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"))
+NK_results <- removeClusters(NK_results, clusters = c("97", "44", "100", "41", "50", "95"))
+NK_results <- removeClusters(NK_results, clusters = c("60", "25", "61", "17", "23"))
+NK_results <- removeClusters(NK_results, clusters = c("51", "30", "40", "98"))
+NK_results <- removeClusters(NK_results, clusters = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56"))
+NK_results <- removeClusters(NK_results, clusters = c("73", "93", "86", "45", "67"))
+NK_results <- removeClusters(NK_results, clusters = c("5", "15"))
+print(cluster_results@cluster.names)
 
 
 
-######
-######
-######
-
-### CLUSTER ANNOTATIONS
+## 4.2.5 Cluster Annotations ===============================================
 # defines an annotation dataframe
 annotations <- data.frame()
 annotations["M.I", "CD3"] <- "c(9, 24, 62, 36, 28, 35, 59, 77)"
 annotations["M.II", "CD3"] <- "c(3, 31, 11, 68, 84, 69, 49, 96)"
-annotations["M.III", "unk"] <- "c(20, 74, 83, 33, 72, 22, 53)"
-annotations["M.IV", "unk"] <- "c(26, 94, 2, 91,38, 43, 58, 75, 89, 55, 87, 76, 65, 81)"
-annotations["M.V", "unk"] <- "c(27, 6, 82, 63, 79, 52, 54)"
-annotations["M.VI", "unk"] <- "c(42, 90, 88, 78, 34, 71, 70, 80, 8, 10, 1, 18)"
-annotations["M.VII", "CD14"] <- "c(97, 44, 100, 41, 50, 95)"
-annotations["M.VIII", "CD11c"] <- "c(60, 25, 61, 17, 23"
+annotations["M.III", "GranzymeB"] <- "c(20, 74, 83, 33, 72, 22, 53)"
+annotations["M.IV", "GranzymeB"] <- "c(26, 94, 2, 91,38, 43, 58, 75, 89, 55, 87, 76, 65, 81)"
+annotations["M.V", "GranzymeB"] <- "c(27, 6, 82, 63, 79, 52, 54)"
+annotations["M.VI", "GranzymeB"] <- "c(42, 90, 88, 78, 34, 71, 70, 80, 8, 10, 1, 18)"
+annotations["M.VII - Monocytes", "CD14"] <- "c(97, 44, 100, 41, 50, 95)"
+annotations["M.VIII", "CD11c"] <- "c(60, 25, 61, 17, 23)"
 annotations["M.IX", "CD66"] <- "c(51, 30, 40, 98)"
 annotations["M.X", "CD66"] <- "c(92, 47, 64, 57, 48, 66, 32, 85, 13, 99, 21, 37, 39, 46, 7, 19, 12, 29, 14, 16, 4, 56)"
 annotations["M.XI", "CD66"] <- "c(73, 93, 86, 45, 67)"
-annotations["M.XII", "unk"] <- "c(5, 15)"
+annotations["M.XII", "CD20"] <- "c(5, 15)"
 print(annotations)
 
 # annotates the cell clusters in a Results object#
@@ -221,17 +240,23 @@ print(cluster_results@cluster.names)
 
 
 
-
 # 5. Analysis and Figures ----------------------------------------------------
 
 ## 4.2 Heatmap generation ====================================================
-
+# General heatmap on 100 clusters
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/heatmap_spade_k", k_value, ".pdf"), height = 10, width = 17)
 heatmapViewer(spade_results)
 dev.off()
 
+# Focused heatmap on metaclusters
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/heatmap_spade_k", k_value, "_metaclusters.pdf"), height = 10, width = 10)
+heatmapViewer(NK_results)
+dev.off()
 
-## 4.3 Identification of Differentially Abundant Clusters and Volcano Plot ====
+
+
+
+## 4.3 Identification of Differential Abundant Clusters and Volcano Plot ====
 # Volcano plot Condition BP vs PP
 resultsDAC_BPvsPP <- identifyDAC(
   spade_results,
@@ -274,6 +299,34 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPB.pd
 volcanoViewer(resultsDAC_BPvsPB)
 dev.off()
 
+# Volcano plot for NK clusters only, condition BP vs PP
+resultsDAC_BPvsPP_NK <- identifyDAC(
+  NK_results,
+  condition1 = condition_BP,
+  condition2 = condition_PP,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_BPvsPP_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_BPvsPP_NK-clusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPP_NK-clusters.pdf"), height = 10, width = 17)
+volcanoViewer(resultsDAC_BPvsPP_NK)
+dev.off()
+
+# Volcano plot for NK clusters only, condition PP vs PB
+resultsDAC_PPvsPB_NK <- identifyDAC(
+  NK_results,
+  condition1 = condition_PP,
+  condition2 = condition_PB,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_PPvsPB_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_PPvsPB_NK-clusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_PPvsPB_NK-clusters.pdf"), height = 10, width = 17)
+volcanoViewer(resultsDAC_PPvsPB_NK)
+dev.off()
+
 
 ## 4.4 Tree Viewer ============================================================
 
@@ -283,8 +336,12 @@ dev.off()
 # dev.off()
 
 # displays in a pdf the aggregated SPADE tree for all samples
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, ".pdf"), width = 15, height = 15)
-treeViewer(spade_results, highlight = resultsDAC)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_GranzymeB.pdf"), width = 15, height = 15)
+treeViewer(spade_results, marker = "GranzymeB")
+dev.off()
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_CD8.pdf"), width = 15, height = 15)
+treeViewer(spade_results, marker = "CD8")
 dev.off()
 
 # displays in a pdf the aggregated SPADE tree for some samples
@@ -309,8 +366,14 @@ samples <- c("PBD28_BB078", "PBD28_BB231", "PBD28_BC641", "PBD28_BD619", "PBD28_
 treeViewer(spade_results, samples = samples, marker = "HLADR")
 dev.off()
 
+# Treeviewer for NK clusters with DAC for BP vs PP condition
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_BPvsPP_NK.pdf"), width = 15, height = 15)
+treeViewer(NK_results, highlight = resultsDAC_BPvsPP_NK)
+dev.off()
 
-## 4.5 CC IDENTIFICATION ========================================================
+
+
+## 4.5 CC Identification ====================================================
 variable <- c("PPD00_BB078" = 50, "PPD00_BB231" = 50, "PPD00_BC641" = 50, "PPD00_BD619" = 50, "PPD00_BD620" = 50, "PBD08_BB078" = 32541, "PBD08_BB231" = 16769, "PBD08_BC641" = 16987, "PBD08_BD619" = 11592, "PBD08_BD620" = 7419, "PBD28_BB078" = 14621, "PBD28_BB231" = 7030, "PBD28_BC641" = 1048, "PBD28_BD619" = 3369, "PBD28_BD620" = 3881)
 resultsCC <- identifyCC(spade_results, variable = variable, th.correlation = 0.8, th.pvalue = 0.05)
 
@@ -321,7 +384,9 @@ plot(resultsCC)
 export(resultsCC, "./SPADEVizR-export/resultsCC.txt")
 
 
-## 4.6 Identify Abundance Clusters =============================================
+
+
+## 4.6 Identify Abundance Clusters =========================================
 # Condition BP
 resultsAC <- identifyAC(spade_results,
   samples = condition_BP,
@@ -351,6 +416,9 @@ resultsAC <- identifyAC(spade_results,
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/AbundanceClusters_k", k_value, "_PB.pdf"), height = 10, width = 17)
 abundantClustersViewer(resultsAC)
 dev.off()
+
+
+
 
 ## 4.6 MDS REPRESENTATIONS ============================================
 # MDS representation at the sample level with all clusters
@@ -386,28 +454,43 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/MDS-Clusters_k", k_value, "_BPvsPP.
 MDSViewer(spade_results)
 dev.off()
 
-## 4.7 Distogram ==============================================================
-# cluster = c("66")
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/Distogram_cluster", cluster, ".pdf"))
+
+
+
+## 4.7 Distogram ===========================================================
+cluster = c("27")
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/Distogram_cluster_", cluster, ".pdf"))
 distogramViewer(spade_results, samples = condition_PP, clusters = cluster)
+dev.off()
+
+cluster = M.III
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/Distogram_cluster_", cluster, ".pdf"))
+distogramViewer(cluster_results, samples = condition_BP, clusters = M.III)
+dev.off()
+
+
+## 4.8 Kinetics visualization for NK metaclusters =============================
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/kinetics_k", k_value, "_metaclusters_III.pdf"), height = 10, width = 10)
+kineticsViewer(cluster_results, clusters = c("M.III"))
+dev.off()
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/kinetics_k", k_value, "_metaclusters_IV.pdf"), height = 10, width = 10)
+kineticsViewer(cluster_results, clusters = c("M.IV"))
+dev.off()
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/kinetics_k", k_value, "_metaclusters_V.pdf"), height = 10, width = 10)
+kineticsViewer(cluster_results, clusters = c("M.V"))
+dev.off()
+
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/kinetics_k", k_value, "_metaclusters_VI.pdf"), height = 10, width = 10)
+kineticsViewer(cluster_results, clusters = c("M.VI"))
 dev.off()
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-### BROUILLON --------------------
+# BROUILLON --------------------
 
 ### PHENOVIEWER REPRESENTATIONS
 # select the significant clusters and print them
@@ -419,9 +502,11 @@ print(clusters)
 phenoViewer(spade_results, cluster = selected.clusters[1])
 
 
+
+
 # GENERATE MASTER REPORT -------------------------------------------------------
 # generates a report with the main SPADEVizR functionalities
 createReport(spade_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram"), verbose = TRUE)
 
 # Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition
-createReport(cluster_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
+createReport(NK_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_NK_metaclusters.pdf", select.plots = c("count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
