@@ -25,7 +25,7 @@ spade_results <- importResultsFromSPADE(output_dir,
   exclude.markers = excluded_markers
 )
 # To check if spade_results is correct :
-# head(spade_results@cluster.phenotypes)
+head(spade_results@cluster.phenotypes)
 
 
 
@@ -127,38 +127,27 @@ spade_results@assignments <- as.data.frame(spade_results@assignments)
 
 ## 4.2.3 Select samples according to their conditions respectively ========
 
-# Before Prime
-condition_BP <- c("BPD19H00_BB078_CD3-CD8+", "BPD19H00_BB231_CD3-CD8+", "BPD19H00_BC641_CD3-CD8+", "BPD19H00_BD620_CD3-CD8+")
-
-test <- assignments %>% select(starts_with("BP"))
-test <- assignments %>% tidyr::pivot_longer(sample_names, names_to = NULL, values_to = "sample_names", )
-
-
-condition_BP = filter(assignments, grepl("BP", assignments$sample_names))
-Mydata1 = filter(mydata, grepl(0,hp))
-
-condition_BP = row.names(assignments)[,grepl("BP", assignments$sample_names) == TRUE))
-
-
-test <- filter(assignments, grepl("BP", row.names(assignments)))
-test <- na.omit (test)
-grepl("BP", row.names(assignments))
-
-
-condition_BP = sample[sample %in% grepl("BP", rownames(assignments))]
-
-
-# Post Prime
-condition_PP <- c("PPD00H00_BB078_CD3-CD8+", "PPD00H00_BB231_CD3-CD8+", "PPD00H00_BD620_CD3-CD8+", "PPD00H03_BB078_CD3-CD8+", "PPD00H03_BB231_CD3-CD8+", "PPD00H03_BC641_CD3-CD8+", "PPD00H03_BD620_CD3-CD8+", "PPD00H06_BB078_CD3-CD8+", "PPD00H06_BB231_CD3-CD8+", "PPD00H06_BC641_CD3-CD8+", "PPD01H00_BB078_CD3-CD8+", "PPD01H00_BB231_CD3-CD8+", "PPD01H00_BC641_CD3-CD8+", "PPD01H00_BD620_CD3-CD8+", "PPD03H00_BB078_CD3-CD8+", "PPD03H00_BB231_CD3-CD8+", "PPD03H00_BC641_CD3-CD8+", "PPD14H00_BB078_CD3-CD8+", "PPD14H00_BB231_CD3-CD8+", "PPD14H00_BC641_CD3-CD8+", "PPD14H00_BD620_CD3-CD8+")
-
-# Post Boost
-condition_PB <- c("PBD00H00_BB078_CD3-CD8+", "PBD00H00_BB231_CD3-CD8+", "PBD00H00_BD620_CD3-CD8+", "PBD00H03_BB078_CD3-CD8+", "PBD00H03_BB231_CD3-CD8+", "PBD00H03_BC641_CD3-CD8+", "PBD00H06_BB078_CD3-CD8+", "PBD00H06_BB231_CD3-CD8+", "PBD00H06_BC641_CD3-CD8+", "PBD00H06_BD620_CD3-CD8+", "PBD01H00_BB078_CD3-CD8+", "PBD01H00_BB231_CD3-CD8+", "PBD01H00_BC641_CD3-CD8+", "PBD01H00_BD620_CD3-CD8+", "PBD03H00_BB078_CD3-CD8+", "PBD03H00_BB231_CD3-CD8+", "PBD03H00_BD620_CD3-CD8+")
+# For condition Before Prime (BP), Post Prime (PP) and Post Boost (PB) via grep
+# and a loop
+condition_BP <- grep("BP", rownames(assignments))
+rownames(assignments[condition_BP, ])
+list_condition <- c("BP", "PB", "PP")
+for (i in list_condition) {
+  condition <- grep(i, rownames(assignments))
+  assign(
+    # Give name to new data frame
+    x = paste0("condition_", i),
+    value = rownames(assignments[condition, ]) ,
+    envir = .GlobalEnv
+  )
+}
 
 
 
 
 ## 4.2.4 Cluster Manipulation  ============================================
-# Merge the abundances and the phenotypes of clusters into a new cluster in a Results object
+# Merge the abundances and the phenotypes of clusters into a new cluster in a
+# Results object
 M.I = c("9", "24", "62", "36", "28", "35", "59", "77")
 M.II = c("3", "31", "11", "68", "84", "69", "49", "96")
 M.III = c("20", "74", "83", "33", "72", "22", "53")
@@ -523,8 +512,8 @@ dev.off()
 
 # 6. Generate Master Report --------------------------------------------------
 
-# Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition for NK clusters
+# Generate a report with the main SPADEVizR functionalities with DAC reports for BP vs PP condition for NK clusters
 createReport(NK_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_NK_clusters.pdf", select.plots = c("count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP_NK), verbose = TRUE)
 
-# Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition for metaclusters
+# Generate a report with the main SPADEVizR functionalities with DAC reports for BP vs PP condition for metaclusters
 createReport(cluster_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("count", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
