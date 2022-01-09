@@ -91,6 +91,12 @@ ggsave(
   height = 10,
   width = 17,
 )
+ggsave(
+  filename = paste0("UMAP.png"),
+  path = "./05_figures",
+  height = 10,
+  width = 17,
+)
 
 # 4.Perform k-means clustering -----------------------------------------------
 
@@ -110,7 +116,7 @@ ggsave(
 
 # Perform k-means clustering with k = 12 clusters according to SPADE heatmap
 # metaclusters
-k_centers <- 6
+k_centers <- 12
 km <- kmeans(forUMAP[1:31], centers = k_centers, nstart = 20)
 
 # View results
@@ -165,4 +171,9 @@ pheatmap(
   cluster_cols = TRUE,
   cluster_rows = TRUE,
 )
-
+pheatmap(
+  mat = as.matrix(heatmap),
+  filename = paste0(("./05_figures/pheatmap"), k_centers, "clusters.png"),
+  cluster_cols = TRUE,
+  cluster_rows = TRUE,
+)

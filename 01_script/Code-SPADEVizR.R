@@ -253,6 +253,8 @@ dev.off()
 
 
 ## 4.3 Identification of Differential Abundant Clusters and Volcano Plot ====
+
+### 4.3.1 Volcano plot for all clusters ####################################
 # Volcano plot Condition BP vs PP
 resultsDAC_BPvsPP <- identifyDAC(
   spade_results,
@@ -295,7 +297,10 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPB.pd
 volcanoViewer(resultsDAC_BPvsPB)
 dev.off()
 
-# Volcano plot for NK clusters only, condition BP vs PP
+
+
+
+### 4.3.2 Volcano plot for NK clusters only, condition BP vs PP ############
 resultsDAC_BPvsPP_NK <- identifyDAC(
   NK_results,
   condition1 = condition_BP,
@@ -339,6 +344,50 @@ dev.off()
 
 
 
+### 4.3.3 Volcano plot for general metaclusters only, condition BP vs PP ####
+resultsDAC_BPvsPB_Meta <- identifyDAC(
+  cluster_results,
+  condition1 = condition_PP,
+  condition2 = condition_BP,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_BPvsPB_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_BPvsPP_Meta-clusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPP_meta-clusters.pdf"), height = 10, width = 10)
+volcanoViewer(resultsDAC_BPvsPB_Meta)
+dev.off()
+
+# Volcano plot for general metaclusters only, condition PP vs PB
+resultsDAC_PPvsPB_Meta <- identifyDAC(
+  cluster_results,
+  condition1 = condition_PB,
+  condition2 = condition_PP,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_BPvsPB_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_PPvsPB_Meta-clusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_PPvsPB_meta-clusters.pdf"), height = 10, width = 10)
+volcanoViewer(resultsDAC_PPvsPB_Meta)
+dev.off()
+
+# Volcano plot for general metaclusters only, condition BP vs PB
+resultsDAC_BPvsPB_Meta <- identifyDAC(
+  cluster_results,
+  condition1 = condition_PB,
+  condition2 = condition_BP,
+  th.pvalue = 0.05,
+  th.fc = 2,
+  method.paired = FALSE
+)
+export(resultsDAC_BPvsPB_NK, filename = paste0("./04_SPADEVizR/ResultsDAC/resultsDAC_k", k_value, "_BPvsPB_Meta-clusters.txt"))
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPB_meta-clusters.pdf"), height = 10, width = 10)
+volcanoViewer(resultsDAC_BPvsPB_Meta)
+dev.off()
+
+
+
 
 ## 4.4 Tree Viewer ============================================================
 
@@ -349,8 +398,14 @@ treeViewer(spade_results, marker = marker)
 dev.off()
 
 # Spade tree for the condition PP vs PB
-pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-PP.pdf", width = 15, height = 15)
-treeViewer(spade_results, samples = condition_BP, highlight = resultsDAC_BPvsPB)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_", marker, ".pdf"), width = 15, height = 15)
+treeViewer(spade_results, samples = condition_BP, highlight = resultsDAC_BPvsPP, marker = "GranzymeB")
+dev.off()
+
+
+# Spade tree for the condition PP vs PB
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_", marker, ".pdf"), width = 15, height = 15)
+treeViewer(spade_results, samples = condition_PP, highlight = resultsDAC_BPvsPP, marker = "GranzymeB")
 dev.off()
 
 # Spade tree for the condition PP vs PB
@@ -483,8 +538,8 @@ dev.off()
 
 ## 4.9 PhenoViewer -------------------------------------------------------------
 
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_III.pdf"), height = 8, width = 10)
-phenoViewer(spade_results, clusters = M.III)
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_II.pdf"), height = 8, width = 10)
+phenoViewer(spade_results, clusters = M.II)
 dev.off()
 
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_IV.pdf"), height = 8, width = 10)
@@ -505,7 +560,34 @@ dev.off()
 # 6. Generate Master Report --------------------------------------------------
 
 # Generate a report with the main SPADEVizR functionalities with DAC reports for BP vs PP condition for NK clusters
-createReport(NK_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_NK_clusters.pdf", select.plots = c("count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP_NK), verbose = TRUE)
+createReport(
+  NK_results,
+  PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_NK_clusters.pdf",
+  select.plots = c(
+    "count",
+    "heatmap",
+    "kinetics_pheno",
+    "distogram",
+    resultsDAC_BPvsPP_NK,
+    resultsDAC_PPvsPB_NK,
+    resultsDAC_BPvsPB_NK,
+    stat.objects = list(AC, DEG, CC, AP),
+    verbose = TRUE
+  )
+)
 
-# Generate a report with the main SPADEVizR functionalities with DAC reports for BP vs PP condition for metaclusters
-createReport(cluster_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("count", "kinetics_pheno", "distogram", resultsDAC_BPvsPP), verbose = TRUE)
+# Generate a report with the main SPADEVizR functionalities with DAC reports for BP vs PP condition for all clusters
+createReport(
+  spade_results,
+  PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf",
+  select.plots = c(
+    "tree",
+    "count",
+    "kinetics_pheno",
+    "distogram",
+    resultsDAC_BPvsPP,
+    resultsDAC_PPvsPB,
+    resultsDAC_BPvsPB
+  ),
+  verbose = TRUE
+))

@@ -88,3 +88,7 @@ plotVISNE <- ggplot(data, aes(x = tsne1, y = tsne2)) +
 pdf(paste0("./05_figures/t-SNE_sample", sample_value, ".pdf"), height = 10, width = 17)
 plot(plotVISNE)
 dev.off()
+
+pdf(paste0("./05_figures/t-SNE_sample", sample_value, ".png"), height = 10, width = 17)
+plot(plotVISNE)
+dev.off()
