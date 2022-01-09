@@ -74,8 +74,8 @@ data$condition_order <- factor(assignments$bc, levels = c("BP", "PP", "PB"))
 plotVISNE <- ggplot(data, aes(x = tsne1, y = tsne2)) +
   geom_point(size = 0.2) +
   scale_color_gradient(low = "yellow", high = "red") +
-  xlab("viSNE1") +
-  ylab("viSNE2") +
+  xlab("X") +
+  ylab("Y") +
   facet_wrap(~ assignments$bc, ncol = 10) +
   facet_grid(. ~ condition_order) +
   theme_bw() +

@@ -204,8 +204,12 @@ NK_results <- removeClusters(NK_results, clusters = c("51", "30", "40", "98"))
 NK_results <- removeClusters(NK_results, clusters = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56"))
 NK_results <- removeClusters(NK_results, clusters = c("73", "93", "86", "45", "67"))
 NK_results <- removeClusters(NK_results, clusters = c("5", "15"))
+
+# Check results
 print(NK_results@cluster.names)
 length(NK_results@cluster.names)
+
+
 
 
 ## 4.2.5 Cluster Annotations ===============================================
@@ -228,7 +232,6 @@ print(annotations)
 # annotates the cell clusters in a Results object#
 # cell clusters are renamed according to the population names
 cluster_results <- annotateClusters(spade_results, annotations = annotations)
-print(cluster_results@cluster.names)
 
 
 
@@ -334,14 +337,12 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/VolcanoDAC_k", k_value, "_BPvsPB_NK
 volcanoViewer(resultsDAC_BPvsPB_NK)
 dev.off()
 
+
+
+
 ## 4.4 Tree Viewer ============================================================
 
-# displays in a pdf the SPADE tree for sample PBD28_BB078
-# pdf("./05_figures/treeViewer-PBD28_BB078.pdf", width=15, height=15)
-# treeViewer(spade_results,samples="PBD28_BB078")
-# dev.off()
-
-# displays in a pdf the aggregated SPADE tree for all samples
+# Display in a pdf the aggregated SPADE tree for all samples
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_GranzymeB.pdf"), width = 15, height = 15)
 treeViewer(spade_results, marker = "GranzymeB")
 dev.off()
@@ -350,13 +351,13 @@ pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_CD8.pdf")
 treeViewer(spade_results, marker = "CD8")
 dev.off()
 
-# displays in a pdf the aggregated SPADE tree for some samples
+# Display in a pdf the aggregated SPADE tree for some samples
 pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-BP.pdf", width = 15, height = 15)
 treeViewer(NK_results, highlight = resultsDAC_BPvsPP_NK)
 dev.off()
 
 
-# Condition PP vs PB
+# Spade tree for the condition PP vs PB
 pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-PP.pdf", width = 15, height = 15)
 treeViewer(spade_results, samples = condition_PP)
 dev.off()
