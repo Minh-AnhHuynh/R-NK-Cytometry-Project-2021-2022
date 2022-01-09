@@ -1,7 +1,10 @@
+# 1. Setup -------------------------------------------------------------------
+# Make sure to install librarian before launching the script.
+# Make sure to have opened with an R project file first.
 librarian::shelf(flowCore, ggplot2, ggrepel, stringr, uwot)
 set.seed(123)
 
-# fs <- read.flowSet(path = "./02_data/NK_FCS/")
+# 2. FlowSet data loading ----------------------------------------------------
 files = list.files("./02_data/NK_FCS/", full.names = TRUE)
 FlowSet = read.flowSet(files)
 
@@ -50,14 +53,14 @@ forUMAP$umap1 = UMAP[, 1]
 forUMAP$umap2 = UMAP[, 2]
 forUMAP$sample = data$sample
 
-# création d'un tableau des conditions, heures, jour, individu selon chaque échantillon
+# Création d'un tableau des conditions, heures, jour, individu selon chaque échantillon
 assignments = data.frame(bc = str_sub(data$sample,1,2),
                          day = str_sub(data$sample,3,5),
                          hour = str_sub(data$sample,6,8),
                          ind = str_sub(data$sample,10,14),
                          sample = data$sample)
 
-# changement de l'ordre d'affichage des conditions pour avoir before-prime puis post-prime puis post-boost
+# Changement de l'ordre d'affichage des conditions pour avoir before-prime puis post-prime puis post-boost
 forUMAP$condition_order = factor(assignments$bc, levels=c('BP','PP','PB'))
 
 plotUMAP = ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) +
@@ -91,7 +94,7 @@ ggsave(filename = paste0("UMAP.pdf"),
 #make this example reproducible
 set.seed(123)
 #perform k-means clustering with k = 4 clusters
-k_centers = 10
+k_centers = 12
 km <- kmeans(forUMAP [1:31], centers = k_centers, nstart = 20)
 #view results
 km
@@ -149,6 +152,6 @@ pheatmap(
 # METACLUSTERS :
 
 
-# forUMAP$clusters == "1" <- "NKcluster"
+forUMAP$clusters == "1" <- "NKcluster"
 # Ensuite on fait color = clusters
 # ggline ; ggboxplot
