@@ -110,7 +110,7 @@ ggsave(
 
 # Perform k-means clustering with k = 12 clusters according to SPADE heatmap
 # metaclusters
-k_centers <- 12
+k_centers <- 6
 km <- kmeans(forUMAP[1:31], centers = k_centers, nstart = 20)
 
 # View results
@@ -127,7 +127,7 @@ plot_kmeans <- ggplot(forUMAP, aes(x = umap1, y = umap2, color = as.factor(clust
   facet_wrap(~ assignments$bc, ncol = 10) +
   facet_grid(. ~ condition_order) +
   theme_bw() +
-  guides(color = guide_legend(title = "Conditions")) +
+  guides(color = guide_legend(title = "Cluster")) +
   theme(
     aspect.ratio = 1,
     panel.grid.major = element_blank(),
@@ -137,7 +137,10 @@ ggsave(
   filename = paste0("kmeans_centers", k_centers, ".pdf"),
   path = "./05_figures"
 )
-
+ggsave(
+  filename = paste0("kmeans_centers", k_centers, ".png"),
+  path = "./05_figures"
+)
 
 
 

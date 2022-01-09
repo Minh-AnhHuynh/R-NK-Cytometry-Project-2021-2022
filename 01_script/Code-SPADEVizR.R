@@ -213,7 +213,7 @@ length(NK_results@cluster.names)
 
 
 ## 4.2.5 Cluster Annotations ===============================================
-# defines an annotation dataframe
+# Define an annotation data frame
 annotations <- data.frame()
 annotations["M.I", "CD3"] <- "c(9, 24, 62, 36, 28, 35, 59, 77)"
 annotations["M.II", "CD3"] <- "c(3, 31, 11, 68, 84, 69, 49, 96)"
@@ -342,24 +342,20 @@ dev.off()
 
 ## 4.4 Tree Viewer ============================================================
 
-# Display in a pdf the aggregated SPADE tree for all samples
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_GranzymeB.pdf"), width = 15, height = 15)
-treeViewer(spade_results, marker = "GranzymeB")
+# Display in a pdf the aggregated SPADE tree for all samples, overlayed by the expression of GranzymeB
+marker = "GranzymeB"
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_", marker, ".pdf"), width = 15, height = 15)
+treeViewer(spade_results, marker = marker)
 dev.off()
-
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_CD8.pdf"), width = 15, height = 15)
-treeViewer(spade_results, marker = "CD8")
-dev.off()
-
-# Display in a pdf the aggregated SPADE tree for some samples
-pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-BP.pdf", width = 15, height = 15)
-treeViewer(NK_results, highlight = resultsDAC_BPvsPP_NK)
-dev.off()
-
 
 # Spade tree for the condition PP vs PB
 pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-PP.pdf", width = 15, height = 15)
-treeViewer(spade_results, samples = condition_PP)
+treeViewer(spade_results, samples = condition_BP, highlight = resultsDAC_BPvsPB)
+dev.off()
+
+# Spade tree for the condition PP vs PB
+pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-B", width = 15, height = 15)
+treeViewer(spade_results, samples = condition_BP)
 dev.off()
 
 # Condition BP vs PB
@@ -367,16 +363,7 @@ pdf("./04_SPADEVizR/SPADEVizR-figures/treeViewer-condition-PB.pdf", width = 15, 
 treeViewer(spade_results, samples = condition_PB)
 dev.off()
 
-# displays in a pdf the aggregated SPADE tree for some samples, overlayed by the expression of HLADR
-pdf("./05_SPADEVizR-figures/treeViewer-PBsamples-HLADR.pdf", width = 15, height = 15)
-samples <- c("PBD28_BB078", "PBD28_BB231", "PBD28_BC641", "PBD28_BD619", "PBD28_BD620")
-treeViewer(spade_results, samples = samples, marker = "HLADR")
-dev.off()
 
-# Treeviewer for NK clusters with DAC for BP vs PP condition
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_BPvsPP_NK.pdf"), width = 15, height = 15)
-treeViewer(NK_results, highlight = resultsDAC_BPvsPP_NK)
-dev.off()
 
 
 
