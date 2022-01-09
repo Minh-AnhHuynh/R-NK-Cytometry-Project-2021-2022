@@ -43,16 +43,17 @@ markerUMAP <- clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 2]
 data <- data[!colnames(data) %in% "cells"]
 forUMAP <- data[, colnames(data) %in% markerUMAP]
 
-NbClust(
-  data = as.matrix(forUMAP),
-  diss = NULL,
-  distance = "euclidean",
-  min.nc = 2,
-  max.nc = 15,
-  method = "kmeans",
-  index = "all",
-  alphaBeale = 0.1
-)
+# Code to detect optimal number of clusters, however vector size is too big.
+# NbClust(
+  # data = as.matrix(forUMAP),
+  # diss = NULL,
+  # distance = "euclidean",
+  # min.nc = 2,
+  # max.nc = 15,
+  # method = "kmeans",
+  # index = "all",
+  # alphaBeale = 0.1
+# )
 
 
 # 3. Creation of UMAP --------------------------------------------------------
