@@ -129,9 +129,13 @@ spade_results@assignments <- as.data.frame(spade_results@assignments)
 
 # For condition Before Prime (BP), Post Prime (PP) and Post Boost (PB) via grep
 # and a loop
-condition_BP <- grep("BP", rownames(assignments))
-rownames(assignments[condition_BP, ])
-list_condition <- c("BP", "PB", "PP")
+# 
+# In order to use the row names, convert from a tibble to a data frame.
+assignments <- as.data.frame(spade_results@assignments)
+# Code to check the data :
+# condition_BP <- grep("BP", rownames(assignments))
+# rownames(assignments[condition_BP, ])list_condition <- c("BP", "PB", "PP")
+# 
 for (i in list_condition) {
   condition <- grep(i, rownames(assignments))
   assign(
@@ -174,7 +178,7 @@ cluster_results <- mergeClusters(cluster_results, clusters = M.XI, name = "M.XI"
 cluster_results <- mergeClusters(cluster_results, clusters = M.XII, name = "M.XII")
 print(cluster_results@cluster.names)
 
-# Delete clusters
+# Delete clusters in cluster_results
 cluster_results <- removeClusters(cluster_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
 cluster_results <- removeClusters(cluster_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"))
 cluster_results <- removeClusters(cluster_results, clusters = c("20", "74", "83", "33", "72", "22", "53"))
@@ -190,8 +194,8 @@ cluster_results <- removeClusters(cluster_results, clusters = c("5", "15"))
 print(cluster_results@cluster.names)
 
 
-# Keep only NK clusters
-
+# Keep only NK clusters in NK_results, leading to 40 clusters which are not
+# clusterized
 NK_results = removeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
 NK_results <- removeClusters(NK_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"))
 NK_results <- removeClusters(NK_results, clusters = c("97", "44", "100", "41", "50", "95"))
@@ -200,8 +204,8 @@ NK_results <- removeClusters(NK_results, clusters = c("51", "30", "40", "98"))
 NK_results <- removeClusters(NK_results, clusters = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56"))
 NK_results <- removeClusters(NK_results, clusters = c("73", "93", "86", "45", "67"))
 NK_results <- removeClusters(NK_results, clusters = c("5", "15"))
-print(cluster_results@cluster.names)
-
+print(NK_results@cluster.names)
+length(NK_results@cluster.names)
 
 
 ## 4.2.5 Cluster Annotations ===============================================
