@@ -521,23 +521,7 @@ dev.off()
 
 
 
-# BROUILLON --------------------
-
-### PHENOVIEWER REPRESENTATIONS
-# select the significant clusters and print them
-clusters.matrix <- resultsCC@spade_results
-selected.clusters <- clusters.matrix[clusters.matrix$significant == TRUE, ]$cluster
-print(clusters)
-
-# displays a parallel coordinates representation for the CC
-phenoViewer(spade_results, cluster = selected.clusters[1])
-
-
-
-
-# GENERATE MASTER REPORT -------------------------------------------------------
-# generates a report with the main SPADEVizR functionalities
-createReport(spade_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_metaclusters.pdf", select.plots = c("tree", "count", "heatmap", "kinetics_pheno", "distogram"), verbose = TRUE)
+# 6. Generate Master Report --------------------------------------------------
 
 # Generate a report with the main SPADEVizR functionalities with DAC and CC reports for BP vs PP condition for NK clusters
 createReport(NK_results, PDFfile = "./04_SPADEVizR/SPADEVizR-report-DAC_BPvsPP_NK_clusters.pdf", select.plots = c("count", "heatmap", "kinetics_pheno", "distogram", resultsDAC_BPvsPP_NK), verbose = TRUE)
