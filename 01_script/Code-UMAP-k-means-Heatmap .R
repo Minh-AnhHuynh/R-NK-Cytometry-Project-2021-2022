@@ -43,17 +43,7 @@ markerUMAP <- clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 2]
 data <- data[!colnames(data) %in% "cells"]
 forUMAP <- data[, colnames(data) %in% markerUMAP]
 
-# Code to detect optimal number of clusters, however vector size is too big.
-# NbClust(
-  # data = as.matrix(forUMAP),
-  # diss = NULL,
-  # distance = "euclidean",
-  # min.nc = 2,
-  # max.nc = 15,
-  # method = "kmeans",
-  # index = "all",
-  # alphaBeale = 0.1
-# )
+
 
 
 # 3. Creation of UMAP --------------------------------------------------------
@@ -81,13 +71,15 @@ assignments <- data.frame(
 forUMAP$condition_order <- factor(assignments$bc, levels = c("BP", "PP", "PB"))
 
 # Plot and save UMAP
-plotUMAP <- ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) +
+plotUMAP <-
+  ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) +
   geom_point(size = 0.2) +
-  xlab("umap1") +
-  ylab("umap2") +
-  facet_wrap(~ assignments$bc, ncol = 3) +
+  xlab(label = "X") +
+  ylab(label = "Y") +
+  facet_wrap( ~ assignments$bc, ncol = 3) +
   facet_grid(. ~ condition_order) +
   theme_bw() +
+  guides(color = guide_legend(title = "Conditions")) +
   theme(
     aspect.ratio = 1,
     panel.grid.major = element_blank(),
@@ -95,13 +87,26 @@ plotUMAP <- ggplot(forUMAP, aes(x = umap1, y = umap2, color = condition_order)) 
   )
 ggsave(
   filename = paste0("UMAP.pdf"),
-  path = "./05_figures"
+  path = "./05_figures",
+  height = 10,
+  width = 17,
 )
 
-
-
-
 # 4.Perform k-means clustering -----------------------------------------------
+
+# Code to detect optimal number of clusters, however vector size is too big.
+# librarian::shelf(NbClust)
+# NbClust(
+# data = as.matrix(forUMAP),
+# diss = NULL,
+# distance = "euclidean",
+# min.nc = 2,
+# max.nc = 15,
+# method = "kmeans",
+# index = "all",
+# alphaBeale = 0.1
+# )
+
 
 # Perform k-means clustering with k = 12 clusters according to SPADE heatmap
 # metaclusters
@@ -115,14 +120,14 @@ km
 forUMAP$clusters <- km$cluster
 
 # Plot results of final k-means model
-
-plot - kmeans <- ggplot(forUMAP, aes(x = umap1, y = umap2, color = as.factor(clusters))) +
+plot_kmeans <- ggplot(forUMAP, aes(x = umap1, y = umap2, color = as.factor(clusters))) +
   geom_point(size = 0.2) +
-  xlab("umap1") +
-  ylab("umap2") +
+  xlab(label = "X") +
+  ylab(label = "Y") +
   facet_wrap(~ assignments$bc, ncol = 10) +
   facet_grid(. ~ condition_order) +
   theme_bw() +
+  guides(color = guide_legend(title = "Conditions")) +
   theme(
     aspect.ratio = 1,
     panel.grid.major = element_blank(),
@@ -136,10 +141,7 @@ ggsave(
 
 
 
-
 # 5. Represent the different markers according to the clusters ---------------
-
-librarian::shelf(pheatmap, reshape2)
 
 # Heatmap of clusters according to the expression matrix
 # Average expression according to each marker
@@ -160,3 +162,4 @@ pheatmap(
   cluster_cols = TRUE,
   cluster_rows = TRUE,
 )
+
