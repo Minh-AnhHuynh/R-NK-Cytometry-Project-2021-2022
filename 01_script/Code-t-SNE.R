@@ -1,8 +1,12 @@
+# 1. Setup -------------------------------------------------------------------
+# Make sure to install librarian before launching the script.
+# Make sure to have opened with an R project file first.
+# 
 # FCS_files are in "./02_data/NK_FCS"
 librarian::shelf(flowCore, Rtsne, ggplot2,ggrepel, stringr,uwot)
-# browseVignettes("flowCore")
 
-# fs <- read.flowSet(path = "./02_data/NK_FCS/")
+# If help is needed : browseVignettes("flowCore")
+# If needed : fs <- read.flowSet(path = "./02_data/NK_FCS/")
 files = list.files("./02_data/NK_FCS/", full.names = TRUE)
 FlowSet = read.flowSet(files)
 
