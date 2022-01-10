@@ -76,7 +76,7 @@ plotUMAP <-
   geom_point(size = 0.2) +
   xlab(label = "X") +
   ylab(label = "Y") +
-  facet_wrap( ~ assignments$bc, ncol = 3) +
+  facet_wrap(~ assignments$bc, ncol = 3) +
   facet_grid(. ~ condition_order) +
   theme_bw() +
   guides(color = guide_legend(title = "Conditions")) +
@@ -95,20 +95,6 @@ ggsave(
 )
 
 # 4.Perform k-means clustering -----------------------------------------------
-
-# Code to detect optimal number of clusters, however vector size is too big.
-# librarian::shelf(NbClust)
-# NbClust(
-# data = as.matrix(forUMAP),
-# diss = NULL,
-# distance = "euclidean",
-# min.nc = 2,
-# max.nc = 15,
-# method = "kmeans",
-# index = "all",
-# alphaBeale = 0.1
-# )
-
 
 # Perform k-means clustering with k = 12 clusters according to SPADE heatmap
 # metaclusters
@@ -143,6 +129,7 @@ ggsave(
   filename = paste0("kmeans_centers", k_centers, ".png"),
   path = "./05_figures"
 )
+
 
 
 

@@ -6,6 +6,11 @@
 librarian::shelf(flowCore, Rtsne, ggplot2, ggrepel, stringr, uwot)
 set.seed(123)
 
+
+
+# 2. Data loading ------------------------------------------------------------
+
+# Data loading using flowCore package.
 # If help is needed : browseVignettes("flowCore")
 # If needed : fs <- read.flowSet(path = "./02_data/NK_FCS/")
 files <- list.files("./02_data/NK_FCS/", full.names = TRUE)
@@ -20,6 +25,8 @@ markers2norm <- clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 1]
 ArcTrans <- arcsinhTransform()
 TransList <- transformList(from = markers2norm, tfun = ArcTrans)
 FlowSet <- TransList %on% FlowSet
+
+
 
 
 # 2. Creation of a data frame with row = cell and column = marker ----------
@@ -38,15 +45,17 @@ markerTSNE <- clustering_markers[-c(1:7, 18, 24, 29, 39, 43:45), 2]
 
 # It's possible to make a sample with the following command line to reduce
 # time doing the t-SNE (for example 100 000) :
-sample_value = 100000
-data <-  data[sample(nrow(data), sample_value), ]
+sample_value <- 100000
+data <- data[sample(nrow(data), sample_value), ]
 
 # Only sampling will produce tSNE in a meaningful time
 data <- data[!colnames(data) %in% "cells"]
 forTSNE <- data[, colnames(data) %in% markerTSNE]
 
 
-# threads = nombre de processeur virtuel
+# 3. t-SNE computation -------------------------------------------------------
+
+# Threads = number of virtual cores
 tSNE <-
   Rtsne(
     forTSNE,
@@ -58,7 +67,7 @@ tSNE <-
 data$tsne1 <- tSNE$Y[, 1]
 data$tsne2 <- tSNE$Y[, 2]
 
-# création d'un tableau des conditions, heures, jour, individu selon chaque échantillon
+# Creation of a table of conditions, times, day, individual for each sample
 assignments <- data.frame(
   bc = str_sub(data$sample, 1, 2),
   day = str_sub(data$sample, 3, 5),
@@ -67,10 +76,12 @@ assignments <- data.frame(
   sample = data$sample
 )
 
-# changement de l'ordre d'affichage des conditions pour avoir before-prime puis post-prime puis post-boost
+# Change the display order of the conditions to before-prime then post-prime then post-boost
 data$condition_order <- factor(assignments$bc, levels = c("BP", "PP", "PB"))
 
-# Création du viSNE
+
+
+# 4. Creation of the t-SNE visualization --------------------------------------
 plotVISNE <- ggplot(data, aes(x = tsne1, y = tsne2)) +
   geom_point(size = 0.2) +
   scale_color_gradient(low = "yellow", high = "red") +

@@ -8,7 +8,6 @@ seed_number <- 123
 
 
 
-
 # 2. Data loading ------------------------------------------------------------
 clustering_markers <- read.delim("./02_data/NK_panel.txt")
 # Filtering markers
@@ -44,16 +43,45 @@ accuracyQC <- qcUniformClusters(spade_results,
 print(accuracyQC$perc)
 
 # Save the accuracy matrix in a text file
-write.table(accuracyQC$accuracy.matrix, paste0("./04_SPADEVizR/QualityControls/UniformClusters-accuracy-matrix_k_", k_value, ".txt"), quote = FALSE, sep = "\t", col.names = NA)
+write.table(
+  accuracyQC$accuracy.matrix,
+  paste0(
+    "./04_SPADEVizR/QualityControls/UniformClusters-accuracy-matrix_k_",
+    k_value,
+    ".txt"
+  ),
+  quote = FALSE,
+  sep = "\t",
+  col.names = NA
+)
 
 # Generate a QC report to detect cell cluster phenotypes with low number of cell clusters
-smallclusterQC <- qcSmallClusters(spade_results, PDFfile = paste0("./04_SPADEVizR/QualityControls/QCreport-SmallClusters_heatmap_k", k_value, ".pdf"), th = 500)
+smallclusterQC <-
+  qcSmallClusters(
+    spade_results,
+    PDFfile = paste0(
+      "./04_SPADEVizR/QualityControls/QCreport-SmallClusters_heatmap_k",
+      k_value,
+      ".pdf"
+    ),
+    th = 500
+  )
 
 # Display the percentage of cell cluster phenotypes with low number of cell clusters
 print(smallclusterQC$perc)
 
 # Save the small cluster matrix in a text file
-write.table(smallclusterQC$small.clusters, paste0("./04_SPADEVizR/QualityControls/UniformClusters-smallclusters-matrix_k", k_value, ".txt"), quote = FALSE, sep = "\t", col.names = NA)
+write.table(
+  smallclusterQC$small.clusters,
+  paste0(
+    "./04_SPADEVizR/QualityControls/UniformClusters-smallclusters-matrix_k",
+    k_value,
+    ".txt"
+  ),
+  quote = FALSE,
+  sep = "\t",
+  col.names = NA
+)
 
 
 
@@ -129,19 +157,19 @@ spade_results@assignments <- as.data.frame(spade_results@assignments)
 
 # For condition Before Prime (BP), Post Prime (PP) and Post Boost (PB) via grep
 # and a loop
-# 
+#
 # In order to use the row names, convert from a tibble to a data frame.
 assignments <- as.data.frame(spade_results@assignments)
 # Code to check the data :
 # condition_BP <- grep("BP", rownames(assignments))
 # rownames(assignments[condition_BP, ])list_condition <- c("BP", "PB", "PP")
-# 
+#
 for (i in list_condition) {
   condition <- grep(i, rownames(assignments))
   assign(
     # Give name to new data frame
     x = paste0("condition_", i),
-    value = rownames(assignments[condition, ]) ,
+    value = rownames(assignments[condition, ]),
     envir = .GlobalEnv
   )
 }
@@ -152,18 +180,18 @@ for (i in list_condition) {
 ## 4.2.4 Cluster Manipulation  ============================================
 # Merge the abundances and the phenotypes of clusters into a new cluster in a
 # Results object
-M.I = c("9", "24", "62", "36", "28", "35", "59", "77")
-M.II = c("3", "31", "11", "68", "84", "69", "49", "96")
-M.III = c("20", "74", "83", "33", "72", "22", "53")
-M.IV = c("26", "94", "2", "91","38", "43", "58", "75", "89", "55", "87", "76", "65", "81")
-M.V = c("27", "6", "82", "63", "79", "52", "54")
-M.VI = c("42", "90", "88", "78", "34", "71", "70", "80", "8", "10", "1", "18")
-M.VII = c("97", "44", "100", "41", "50", "95")
-M.VIII = c("60", "25", "61", "17", "23")
-M.IX = c("51", "30", "40", "98")
-M.X = c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56")
-M.XI = c("73", "93", "86", "45", "67")
-M.XII = c("5", "15")
+M.I <- c("9", "24", "62", "36", "28", "35", "59", "77")
+M.II <- c("3", "31", "11", "68", "84", "69", "49", "96")
+M.III <- c("20", "74", "83", "33", "72", "22", "53")
+M.IV <- c("26", "94", "2", "91", "38", "43", "58", "75", "89", "55", "87", "76", "65", "81")
+M.V <- c("27", "6", "82", "63", "79", "52", "54")
+M.VI <- c("42", "90", "88", "78", "34", "71", "70", "80", "8", "10", "1", "18")
+M.VII <- c("97", "44", "100", "41", "50", "95")
+M.VIII <- c("60", "25", "61", "17", "23")
+M.IX <- c("51", "30", "40", "98")
+M.X <- c("92", "47", "64", "57", "48", "66", "32", "85", "13", "99", "21", "37", "39", "46", "7", "19", "12", "29", "14", "16", "4", "56")
+M.XI <- c("73", "93", "86", "45", "67")
+M.XII <- c("5", "15")
 cluster_results <- mergeClusters(spade_results, clusters = M.I, name = "M.I")
 cluster_results <- mergeClusters(cluster_results, clusters = M.II, name = "M.II")
 cluster_results <- mergeClusters(cluster_results, clusters = M.III, name = "M.III")
@@ -182,7 +210,7 @@ print(cluster_results@cluster.names)
 cluster_results <- removeClusters(cluster_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
 cluster_results <- removeClusters(cluster_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"))
 cluster_results <- removeClusters(cluster_results, clusters = c("20", "74", "83", "33", "72", "22", "53"))
-cluster_results <- removeClusters(cluster_results, clusters = c("26", "94", "2", "91","38", "43", "58", "75", "89", "55", "87", "76", "65", "81"))
+cluster_results <- removeClusters(cluster_results, clusters = c("26", "94", "2", "91", "38", "43", "58", "75", "89", "55", "87", "76", "65", "81"))
 cluster_results <- removeClusters(cluster_results, clusters = c("27", "6", "82", "63", "79", "52", "54"))
 cluster_results <- removeClusters(cluster_results, clusters = c("42", "90", "88", "78", "34", "71", "70", "80", "8", "10", "1", "18"))
 cluster_results <- removeClusters(cluster_results, clusters = c("97", "44", "100", "41", "50", "95"))
@@ -196,7 +224,7 @@ print(cluster_results@cluster.names)
 
 # Keep only NK clusters in NK_results, leading to 40 clusters which are not
 # clusterized
-NK_results = removeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
+NK_results <- removeClusters(spade_results, clusters = c("9", "24", "62", "36", "28", "35", "59", "77"))
 NK_results <- removeClusters(NK_results, clusters = c("3", "31", "11", "68", "84", "69", "49", "96"))
 NK_results <- removeClusters(NK_results, clusters = c("97", "44", "100", "41", "50", "95"))
 NK_results <- removeClusters(NK_results, clusters = c("60", "25", "61", "17", "23"))
@@ -392,7 +420,7 @@ dev.off()
 ## 4.4 Tree Viewer ============================================================
 
 # Display in a pdf the aggregated SPADE tree for all samples, overlayed by the expression of GranzymeB
-marker = "GranzymeB"
+marker <- "GranzymeB"
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/treeViewer_k", k_value, "_", marker, ".pdf"), width = 15, height = 15)
 treeViewer(spade_results, marker = marker)
 dev.off()
@@ -421,21 +449,7 @@ dev.off()
 
 
 
-
-## 4.5 CC Identification ====================================================
-variable <- c("PPD00_BB078" = 50, "PPD00_BB231" = 50, "PPD00_BC641" = 50, "PPD00_BD619" = 50, "PPD00_BD620" = 50, "PBD08_BB078" = 32541, "PBD08_BB231" = 16769, "PBD08_BC641" = 16987, "PBD08_BD619" = 11592, "PBD08_BD620" = 7419, "PBD28_BB078" = 14621, "PBD28_BB231" = 7030, "PBD28_BC641" = 1048, "PBD28_BD619" = 3369, "PBD28_BD620" = 3881)
-resultsCC <- identifyCC(spade_results, variable = variable, th.correlation = 0.8, th.pvalue = 0.05)
-
-# diplays a char representations of the CC results
-plot(resultsCC)
-
-# exports the results in a text file
-export(resultsCC, "./SPADEVizR-export/resultsCC.txt")
-
-
-
-
-## 4.6 Identify Abundance Clusters =========================================
+## 4.5 Identify Abundance Clusters =========================================
 # Condition BP
 resultsAC <- identifyAC(spade_results,
   samples = condition_BP,
@@ -505,18 +519,20 @@ dev.off()
 
 
 ## 4.7 Distogram ===========================================================
-cluster = c("27")
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/Distogram_cluster_", cluster, ".pdf"))
-distogramViewer(spade_results, samples = condition_PP, clusters = cluster)
-dev.off()
-
-cluster = M.III
+# For a selected cluster, make a distogram with pearson correlation to see
+# which markers are correlated together.
+cluster <- M.III
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/Distogram_cluster_", cluster, ".pdf"))
 distogramViewer(cluster_results, samples = condition_BP, clusters = M.III)
 dev.off()
 
 
+
+
 ## 4.8 Kinetics visualization for NK metaclusters =============================
+
+# Visualization of the cluster abudance across sample timepoints
+# Make kinetics visualization of the four NK cell metaclusters
 
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/kinetics_k", k_value, "_metaclusters_III.pdf"), height = 10, width = 10)
 kineticsViewer(cluster_results, clusters = c("M.III"))
@@ -536,10 +552,13 @@ dev.off()
 
 
 
+
 ## 4.9 PhenoViewer -------------------------------------------------------------
 
-pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_II.pdf"), height = 8, width = 10)
-phenoViewer(spade_results, clusters = M.II)
+# Visualization of median marker expressions of each sample
+#
+pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_III.pdf"), height = 8, width = 10)
+phenoViewer(spade_results, clusters = M.III)
 dev.off()
 
 pdf(paste0("./04_SPADEVizR/SPADEVizR-figures/PhenoViewer_k", k_value, "_NK-metaclusters_IV.pdf"), height = 8, width = 10)
@@ -587,7 +606,7 @@ createReport(
     "distogram",
     resultsDAC_BPvsPP,
     resultsDAC_PPvsPB,
-    resultsDAC_BPvsPB
-  ),
-  verbose = TRUE
-))
+    resultsDAC_BPvsPB,
+    verbose = TRUE
+  )
+)
