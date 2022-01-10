@@ -87,15 +87,11 @@ plotUMAP <-
   )
 ggsave(
   filename = paste0("UMAP.pdf"),
-  path = "./05_figures",
-  height = 10,
-  width = 17,
+  path = "./05_figures"
 )
 ggsave(
   filename = paste0("UMAP.png"),
-  path = "./05_figures",
-  height = 10,
-  width = 17,
+  path = "./05_figures"
 )
 
 # 4.Perform k-means clustering -----------------------------------------------
